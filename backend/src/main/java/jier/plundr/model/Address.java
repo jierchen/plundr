@@ -1,5 +1,6 @@
 package jier.plundr.model;
 
+import jier.plundr.model.enums.Province;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,5 +29,5 @@ public class Address {
     @Column(name = "zip_code")
     private String zipCode;
     @Column(name = "province")
-    private String province;
+    private Province province;
 }
