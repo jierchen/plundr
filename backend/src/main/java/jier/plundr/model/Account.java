@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -17,7 +18,7 @@ import java.util.List;
 @NoArgsConstructor
 @Setter
 @Getter
-public class Account {
+public class Account extends BaseEntity {
 
     @Id
     @GeneratedValue
@@ -40,10 +41,4 @@ public class Account {
 
     @OneToMany(mappedBy = "owningAccount", cascade = CascadeType.ALL)
     private List<Transaction> Transactions;
-
-    // Record information
-    @Column(name = "create_date")
-    private LocalDateTime createDate;
-    @Column(name = "last_updated")
-    private LocalDateTime lastUpdated;
 }

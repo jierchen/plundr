@@ -16,11 +16,6 @@ import java.math.BigDecimal;
 @Getter
 public class Employee extends User {
 
-    @Id
-    @GeneratedValue
-    @Column(name = "employee_id")
-    private Long id;
-
     // Employee information
     @Column(name = "salary")
     private BigDecimal salary;

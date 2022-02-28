@@ -1,19 +1,28 @@
 package jier.plundr.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
-@MappedSuperclass()
+@Entity
+@Inheritance(strategy = InheritanceType.JOINED)
+@AllArgsConstructor
+@NoArgsConstructor
 @Setter
 @Getter
-public class User {
+public abstract class User extends BaseEntity {
+
+    @Id
+    @GeneratedValue
+    @Column(name = "user_id")
+    private Long id;
+
+    @Column(name = "type")
+    private String type;
 
     // Personal information
     @Column(name = "first_name")
@@ -28,7 +37,7 @@ public class User {
     private String email;
 
     // Address information
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "address_id")
     private Address address;
 
@@ -37,10 +46,4 @@ public class User {
     private String username;
     @Column(name = "password")
     private String password;
-
-    // Record information
-    @Column(name = "create_date")
-    private LocalDateTime createDate;
-    @Column(name = "last_updated")
-    private LocalDateTime lastUpdated;
 }

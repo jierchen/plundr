@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Setter
 @Getter
-public class Transaction {
+public class Transaction extends BaseEntity {
 
     @Id
     @GeneratedValue
@@ -38,10 +38,4 @@ public class Transaction {
     @ManyToOne
     @JoinColumn(name="recipient_id")
     private Account recipientAccount;
-
-    // Record information
-    @Column(name = "create_date")
-    private LocalDateTime createDate;
-    @Column(name = "last_updated")
-    private LocalDateTime lastUpdated;
 }

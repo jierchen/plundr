@@ -14,7 +14,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Setter
 @Getter
-public class Address {
+public class Address extends BaseEntity {
 
     @Id
     @GeneratedValue
@@ -30,4 +30,7 @@ public class Address {
     private String zipCode;
     @Column(name = "province")
     private Province province;
+
+    @OneToOne(mappedBy = "address")
+    private User owningUser;
 }

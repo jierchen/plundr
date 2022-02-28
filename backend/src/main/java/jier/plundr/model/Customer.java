@@ -16,11 +16,6 @@ import java.util.List;
 @Getter
 public class Customer extends User {
 
-    @Id
-    @GeneratedValue
-    @Column(name = "customer_id")
-    private Long id;
-
     // Customer bank accounts
     @OneToMany(mappedBy = "owningCustomer", cascade = CascadeType.ALL)
     private List<Account> accounts;
