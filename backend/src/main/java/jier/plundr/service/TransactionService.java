@@ -11,11 +11,11 @@ public interface TransactionService {
 
     List<Transaction> findAll(Pageable pageable);
 
-    List<Transaction> findAllByOwningAccountOrRecipientAccount(Long accountId, Pageable pageable);
+    List<Transaction> findAllRelatedToAccount(Long accountId, Pageable pageable);
 
     Transaction saveTransaction(Transaction transaction);
 
     Transaction createTransaction(TransactionDTO transactionDto, Long owningAccountId, Long recipientAccountId);
 
-    Boolean deleteTransaction(Long id);
+    Boolean deleteTransaction(Long transactionId);
 }

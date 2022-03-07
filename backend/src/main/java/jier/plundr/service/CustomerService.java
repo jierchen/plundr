@@ -8,15 +8,13 @@ import java.util.List;
 
 public interface CustomerService {
 
-    Customer findByEmail(String email);
-
     List<Customer> findAll(Pageable pageable);
 
     Customer saveCustomer(Customer customer);
 
     Customer createCustomer(UserDTO userDto);
 
-    Customer updateCustomer(Long id, UserDTO userDto);
+    Customer updateCustomer(Long customerId, UserDTO userDto);
 
-    Boolean deleteCustomer(Long id);
+    Boolean deleteCustomer(Long customerId);
 }

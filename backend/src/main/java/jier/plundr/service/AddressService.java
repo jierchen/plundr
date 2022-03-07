@@ -12,9 +12,9 @@ public interface AddressService {
 
     Address saveAddress(Address address);
 
-    Address createAddress(AddressDTO addressDto);
+    Address createAddress(AddressDTO addressDto, Long userId);
 
-    Address updateAddress(Long id, AddressDTO addressDto);
+    Address updateAddress(Long addressId, AddressDTO addressDto);
 
-    Boolean deleteAddress(Long id);
+    Boolean deleteAddress(Long addressId);
 }
