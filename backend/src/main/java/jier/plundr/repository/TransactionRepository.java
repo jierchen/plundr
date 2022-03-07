@@ -9,4 +9,8 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
+
+    Page<Transaction> findAllByOwningAccountOrRecipientAccount
+            (Account owningAccount, Account recipientAccount, Pageable pageable);
+
 }
