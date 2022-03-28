@@ -1,7 +1,8 @@
 package jier.plundr.service;
 
-import jier.plundr.dto.EmployeeDTO;
-import jier.plundr.dto.UserDTO;
+import jier.plundr.dto.employee.CreateEmployeeDTO;
+import jier.plundr.dto.customer.CreateCustomerDTO;
+import jier.plundr.dto.employee.UpdateEmployeeDTO;
 import jier.plundr.model.Employee;
 import jier.plundr.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
@@ -28,40 +30,53 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    public Optional<Employee> findById(Long employeeId) {
+        return employeeRepository.findById(employeeId);
+    }
+
+    @Override
     public Employee saveEmployee(Employee employee) {
         return employeeRepository.save(employee);
     }
 
     @Override
-    public Employee createEmployee(UserDTO userDto, EmployeeDTO employeeDTO) {
+    public Employee createEmployee(CreateEmployeeDTO createEmployeeDto) {
         Employee newEmployee = new Employee();
 
-        newEmployee.setFirstName(userDto.getFirstName());
-        newEmployee.setLastName(userDto.getLastName());
-        newEmployee.setPhoneNumber(userDto.getPhoneNumber());
-        newEmployee.setDateOfBirth(userDto.getDateOfBirth());
-        newEmployee.setEmail(userDto.getEmail());
-        newEmployee.setUsername(userDto.getUsername());
-        newEmployee.setPassword(userDto.getPassword());
+        newEmployee.setFirstName(createEmployeeDto.getFirstName());
+        newEmployee.setLastName(createEmployeeDto.getLastName());
+        newEmployee.setPhoneNumber(createEmployeeDto.getPhoneNumber());
+        newEmployee.setDateOfBirth(createEmployeeDto.getDateOfBirth());
+        newEmployee.setEmail(createEmployeeDto.getEmail());
+        newEmployee.setUsername(createEmployeeDto.getUsername());
+        newEmployee.setPassword(createEmployeeDto.getPassword());
 
-        newEmployee.setSalary(employeeDTO.getSalary());
+        newEmployee.setSalary(createEmployeeDto.getSalary());
 
         return this.saveEmployee(newEmployee);
     }
 
     @Override
-    public Employee updateEmployee(Long employeeId, UserDTO userDto, EmployeeDTO employeeDTO) {
+    public Employee updateEmployee(Long employeeId, UpdateEmployeeDTO updateEmployeeDto) {
         Employee employee = employeeRepository.getById(employeeId);
 
-        employee.setFirstName(userDto.getFirstName());
-        employee.setLastName(userDto.getLastName());
-        employee.setPhoneNumber(userDto.getPhoneNumber());
-        employee.setDateOfBirth(userDto.getDateOfBirth());
-        employee.setEmail(userDto.getEmail());
-        employee.setUsername(userDto.getUsername());
-        employee.setPassword(userDto.getPassword());
+        if(updateEmployeeDto.getFirstName() != null)
+            employee.setFirstName(updateEmployeeDto.getFirstName());
+        if(updateEmployeeDto.getLastName() != null)
+            employee.setLastName(updateEmployeeDto.getLastName());
+        if(updateEmployeeDto.getPhoneNumber() != null)
+            employee.setPhoneNumber(updateEmployeeDto.getPhoneNumber());
+        if(updateEmployeeDto.getDateOfBirth() != null)
+            employee.setDateOfBirth(updateEmployeeDto.getDateOfBirth());
+        if(updateEmployeeDto.getEmail() != null)
+            employee.setEmail(updateEmployeeDto.getEmail());
+        if(updateEmployeeDto.getUsername() != null)
+            employee.setUsername(updateEmployeeDto.getUsername());
+        if(updateEmployeeDto.getPassword() != null)
+            employee.setPassword(updateEmployeeDto.getPassword());
 
-        employee.setSalary(employeeDTO.getSalary());
+        if(updateEmployeeDto.getSalary() != null)
+            employee.setSalary(updateEmployeeDto.getSalary());
 
         return this.saveEmployee(employee);
     }

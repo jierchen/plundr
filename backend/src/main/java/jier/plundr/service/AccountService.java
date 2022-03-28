@@ -1,12 +1,13 @@
 package jier.plundr.service;
 
+import jier.plundr.dto.account.*;
 import jier.plundr.model.Account;
-import jier.plundr.model.Customer;
 import jier.plundr.model.enums.AccountType;
 import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 public interface AccountService {
 
@@ -14,17 +15,21 @@ public interface AccountService {
 
     List<Account> findAllByOwningCustomer(Long customerId);
 
+    Optional<Account> findById(Long accountId);
+
     Account saveAccount(Account account);
 
-    Account createAccount(AccountType accountType, Long customerId);
+    Account createAccount(CreateAccountDTO createAccountDto);
 
-    Account updateAccount(Long accountId, AccountType accountType);
+    Account updateAccount(Long accountId, UpdateAccountDTO updateAccountDto);
 
     Boolean deleteAccount(Long accountId);
 
-    void deposit(Long accountId, BigDecimal amount);
+    void setDepositAccount(Long customerId, Long accountId);
 
-    void withdraw(Long accountId, BigDecimal amount);
+    void deposit(DepositDTO depositDto);
 
-    void transfer(Long senderAccountId, Long recipientAccountId, BigDecimal amount);
+    void withdraw(WithdrawDTO withdrawDto);
+
+    void transfer(TransferDTO transferDto);
 }

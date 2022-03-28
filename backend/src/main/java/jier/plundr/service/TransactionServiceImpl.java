@@ -1,6 +1,6 @@
 package jier.plundr.service;
 
-import jier.plundr.dto.TransactionDTO;
+import jier.plundr.dto.transaction.CreateTransactionDTO;
 import jier.plundr.model.Account;
 import jier.plundr.model.Transaction;
 import jier.plundr.repository.AccountRepository;
@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TransactionServiceImpl implements TransactionService {
@@ -43,24 +44,29 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
+    public Optional<Transaction> findById(Long transactionId) {
+        return transactionRepository.findById(transactionId);
+    }
+
+    @Override
     public Transaction saveTransaction(Transaction transaction) {
         return transactionRepository.save(transaction);
     }
 
     @Override
-    public Transaction createTransaction(TransactionDTO transactionDto, Long owningAccountId, Long recipientAccountId) {
+    public Transaction createTransaction(CreateTransactionDTO createTransactionDto) {
         Transaction transaction = new Transaction();
-        transaction.setTransactionType(transactionDto.getTransactionType());
-        transaction.setAmount(transactionDto.getAmount());
-        transaction.setDescription(transactionDto.getDescription());
+        transaction.setTransactionType(createTransactionDto.getTransactionType());
+        transaction.setAmount(createTransactionDto.getAmount());
+        transaction.setDescription(createTransactionDto.getDescription());
 
-        if(owningAccountId != null) {
-            Account owningAccount = accountRepository.getById(owningAccountId);
+        if(createTransactionDto.getOwningAccountId() != null) {
+            Account owningAccount = accountRepository.getById(createTransactionDto.getOwningAccountId());
             transaction.setOwningAccount(owningAccount);
         }
 
-        if(recipientAccountId != null) {
-            Account recipientAccountIdAccount = accountRepository.getById(recipientAccountId);
+        if(createTransactionDto.getRecipientAccountId() != null) {
+            Account recipientAccountIdAccount = accountRepository.getById(createTransactionDto.getRecipientAccountId());
             transaction.setOwningAccount(recipientAccountIdAccount);
         }
 

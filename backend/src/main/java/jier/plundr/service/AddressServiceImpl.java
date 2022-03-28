@@ -1,6 +1,7 @@
 package jier.plundr.service;
 
-import jier.plundr.dto.AddressDTO;
+import jier.plundr.dto.address.CreateAddressDTO;
+import jier.plundr.dto.address.UpdateAddressDTO;
 import jier.plundr.model.Address;
 import jier.plundr.model.User;
 import jier.plundr.repository.AddressRepository;
@@ -11,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AddressServiceImpl implements AddressService {
@@ -33,31 +35,41 @@ public class AddressServiceImpl implements AddressService {
     }
 
     @Override
+    public Optional<Address> findAddressById(Long id) {
+        return addressRepository.findById(id);
+    }
+
+    @Override
     public Address saveAddress(Address address) {
         return addressRepository.save(address);
     }
 
     @Override
-    public Address createAddress(AddressDTO addressDto, Long userId) {
-        User owningUser = userRepository.getById(userId);
+    public Address createAddress(CreateAddressDTO createAddressDto) {
+        User owningUser = userRepository.getById(createAddressDto.getUserId());
 
         Address newAddress = new Address();
-        newAddress.setStreetAddress(addressDto.getStreetAddress());
-        newAddress.setCity(addressDto.getCity());
-        newAddress.setProvince(addressDto.getProvince());
-        newAddress.setZipCode(addressDto.getZipCode());
+        newAddress.setStreetAddress(createAddressDto.getStreetAddress());
+        newAddress.setCity(createAddressDto.getCity());
+        newAddress.setProvince(createAddressDto.getProvince());
+        newAddress.setZipCode(createAddressDto.getZipCode());
         newAddress.setOwningUser(owningUser);
 
         return this.saveAddress(newAddress);
     }
 
     @Override
-    public Address updateAddress(Long addressId, AddressDTO addressDto) {
+    public Address updateAddress(Long addressId, UpdateAddressDTO updateAddressDto) {
         Address address =  addressRepository.getById(addressId);
-        address.setStreetAddress(addressDto.getStreetAddress());
-        address.setCity(addressDto.getCity());
-        address.setProvince(addressDto.getProvince());
-        address.setZipCode(addressDto.getZipCode());
+
+        if(updateAddressDto.getStreetAddress() != null)
+            address.setStreetAddress(updateAddressDto.getStreetAddress());
+        if(updateAddressDto.getCity() != null)
+            address.setCity(updateAddressDto.getCity());
+        if(updateAddressDto.getProvince() != null)
+            address.setProvince(updateAddressDto.getProvince());
+        if(updateAddressDto.getZipCode() != null)
+            address.setZipCode(updateAddressDto.getZipCode());
 
         return this.saveAddress(address);
     }
