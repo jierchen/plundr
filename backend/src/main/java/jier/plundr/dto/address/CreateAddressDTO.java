@@ -1,4 +1,4 @@
-package jier.plundr.dto;
+package jier.plundr.dto.address;
 
 import jier.plundr.model.enums.Province;
 import lombok.AllArgsConstructor;
@@ -10,8 +10,9 @@ import lombok.Setter;
 @NoArgsConstructor
 @Setter
 @Getter
-public class AddressDTO {
+public class CreateAddressDTO {
 
+    private Long userId;
     private String streetAddress;
     private String city;
     private String zipCode;

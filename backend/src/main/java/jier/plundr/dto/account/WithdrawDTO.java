@@ -1,6 +1,5 @@
-package jier.plundr.dto;
+package jier.plundr.dto.account;
 
-import jier.plundr.model.enums.TransactionType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,10 +11,9 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @Setter
 @Getter
-public class TransactionDTO {
+public class WithdrawDTO {
 
+    private Long accountId;
     private BigDecimal amount;
-    private TransactionType transactionType;
     private String description;
-
 }

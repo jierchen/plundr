@@ -1,4 +1,4 @@
-package jier.plundr.dto;
+package jier.plundr.dto.account;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,9 +9,11 @@ import java.math.BigDecimal;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
 @Setter
-public class EmployeeDTO {
+@Getter
+public class DepositDTO {
 
-    private BigDecimal salary;
+    private Long accountId;
+    private BigDecimal amount;
+    private String description;
 }

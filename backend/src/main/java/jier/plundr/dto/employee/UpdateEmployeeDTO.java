@@ -1,17 +1,18 @@
-package jier.plundr.dto;
+package jier.plundr.dto.employee;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class UserDTO {
+public class UpdateEmployeeDTO {
 
     // Personal information
     private String firstName;
@@ -23,4 +24,7 @@ public class UserDTO {
     // Login information
     private String username;
     private String password;
+
+    // Employee information
+    private BigDecimal salary;
 }
