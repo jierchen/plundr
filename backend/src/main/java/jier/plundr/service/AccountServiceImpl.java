@@ -54,28 +54,59 @@ public class AccountServiceImpl implements AccountService {
         this.transactionRepository = transactionRepository;
     }
 
+    /**
+     * Finds all {@code Accounts}.
+     *
+     * @param pageable {@code Pageable} object containing pagination information to limit search results.
+     * @return List of found {@code Accounts}.
+     */
     @Override
     public List<Account> findAll(Pageable pageable) {
         Page<Account> accountPage = accountRepository.findAll(pageable);
         return accountPage.getContent();
     }
 
+    /**
+     * Finds all {@code Accounts} belonging to a {@code Customer}.
+     *
+     * @param customerId ID of {@code Customer} owning the {@code Accounts}.
+     * @return List of {@code Accounts} belonging to found {@code Customer}.
+     */
     @Override
     public List<Account> findAllByOwningCustomer(Long customerId) {
         Customer owningCustomer = customerRepository.getById(customerId);
         return accountRepository.findAllByOwningCustomer(owningCustomer);
     }
 
+    /**
+     * Finds an {@code Account} by {@code id}.
+     *
+     * @param accountId {@code id} of {@code Account} to find.
+     * @return An {@code Optional} object containing the found {@code Account}
+     *         or {@code null} if {@code Account} is not found.
+     */
     @Override
     public Optional<Account> findById(Long accountId) {
         return accountRepository.findById(accountId);
     }
 
+    /**
+     * Saves an {@code Account} to keep changes made.
+     *
+     * @param account {@code Account} to save.
+     * @return {@code Account} saved by the {@code AccountRepository}.
+     */
     @Override
     public Account saveAccount(Account account) {
         return accountRepository.save(account);
     }
 
+    /**
+     * Creates and saves a new {@code Account}.
+     *
+     * @param createAccountDto  {@code CreateAccountDTO} containing information limited to {@code Account} creation.
+     * @return {@code Account} created and saved.
+     */
     @Override
     public Account createAccount(CreateAccountDTO createAccountDto) {
         Customer owningCustomer = customerRepository.getById(createAccountDto.getOwningCustomerId());
@@ -98,6 +129,13 @@ public class AccountServiceImpl implements AccountService {
         return this.saveAccount(newAccount);
     }
 
+    /**
+     * Updates and saves an existing {@code Account}.
+     *
+     * @param accountId @{code id} of {@code Account} to update.
+     * @param updateAccountDto  {@code CreateAccountDTO} containing information limited to {@code Account} updating.
+     * @return {@code Account} updated and saved.
+     */
     @Override
     public Account updateAccount(Long accountId, UpdateAccountDTO updateAccountDto) {
         Account account = accountRepository.getById(accountId);
@@ -115,6 +153,12 @@ public class AccountServiceImpl implements AccountService {
         return accountRepository.save(account);
     }
 
+    /**
+     * Deletes an existing {@code Account}.
+     *
+     * @param accountId {@code id} of {@code Account} to delete.
+     * @return Return {@code True} if found {@code Account} has been successfully deleted, {@code False} otherwise.
+     */
     @Override
     public Boolean deleteAccount(Long accountId) {
         if(accountRepository.existsById(accountId)){
@@ -124,6 +168,12 @@ public class AccountServiceImpl implements AccountService {
         return false;
     }
 
+    /**
+     * Sets the {@code depositAccount} for a {@code Customer}.
+     *
+     * @param customerId {@code id} of Customer.
+     * @param accountId {@code id} of Account to set as {@code depositAccount}.
+     */
     @Override
     public void setDepositAccount(Long customerId, Long accountId) {
         Customer customer = customerRepository.getById(customerId);
@@ -134,6 +184,11 @@ public class AccountServiceImpl implements AccountService {
         }
     }
 
+    /**
+     * Makes a deposit for an {@code Account}.
+     *
+     * @param depositDto {@code DepositDTO} containing information for a deposit.
+     */
     @Override
     public void deposit(DepositDTO depositDto) {
         BigDecimal amount = depositDto.getAmount();
@@ -153,6 +208,11 @@ public class AccountServiceImpl implements AccountService {
         accountRepository.save(account);
     }
 
+    /**
+     * Makes a deposit for an {@code Account}.
+     *
+     * @param withdrawDto {@code WithdrawDTO} containing information for a withdraw.
+     */
     @Override
     public void withdraw(WithdrawDTO withdrawDto) {
         BigDecimal amount = withdrawDto.getAmount();
@@ -171,6 +231,11 @@ public class AccountServiceImpl implements AccountService {
         accountRepository.save(account);
     }
 
+    /**
+     * Makes a transfer for an {@code Account}.
+     *
+     * @param transferDto {@code TransferDTO} containing information for a transfer.
+     */
     @Override
     public void transfer(TransferDTO transferDto) {
         BigDecimal amount = transferDto.getAmount();
