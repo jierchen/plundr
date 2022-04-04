@@ -12,6 +12,7 @@ import org.springframework.data.annotation.CreatedDate;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -45,5 +46,5 @@ public class Account extends BaseEntity {
 
     @OneToMany(mappedBy = "owningAccount", cascade = CascadeType.ALL)
     @JsonManagedReference
-    private List<Transaction> Transactions;
+    private List<Transaction> Transactions = new ArrayList<>();
 }

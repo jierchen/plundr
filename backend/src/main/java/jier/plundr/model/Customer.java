@@ -21,8 +21,9 @@ public class Customer extends User {
 
     // Customer bank accounts
     @OneToMany(mappedBy = "owningCustomer", cascade = CascadeType.ALL)
-    private List<Account> accounts;
     @JsonManagedReference
+    private List<Account> accounts = new ArrayList<>();
+
     @OneToOne
     @JoinColumn(name = "deposit_id")
     private Account depositAccount;
@@ -35,5 +36,5 @@ public class Customer extends User {
             inverseJoinColumns = @JoinColumn(name = "contact_id")
     )
     @JsonIgnoreProperties("contacts")
-    private List<Customer> contacts;
+    private List<Customer> contacts = new ArrayList<>();
 }
