@@ -34,6 +34,11 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
+    public Customer findByEmail(String email) {
+        return customerRepository.findByEmail(email);
+    }
+
+    @Override
     public Customer saveCustomer(Customer customer) {
         return customerRepository.save(customer);
     }
@@ -82,5 +87,20 @@ public class CustomerServiceImpl implements CustomerService {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public List<Customer> getCustomerContacts(Long customerId, Pageable pageable) {
+        Page<Customer> customerPage = customerRepository.findContactsByCustomerId(customerId, pageable);
+        return customerPage.getContent();
+    }
+
+    @Override
+    public void addContactByEmail(Long customerId, String contactEmail) {
+        Customer customer = customerRepository.getById(customerId);
+        Customer contact = customerRepository.findByEmail(contactEmail);
+
+        customer.getContacts().add(contact);
+        this.saveCustomer(customer);
     }
 }

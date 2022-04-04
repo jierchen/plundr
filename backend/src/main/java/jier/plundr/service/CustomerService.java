@@ -14,6 +14,8 @@ public interface CustomerService {
 
     Optional<Customer> findById(Long customerId);
 
+    Customer findByEmail(String email);
+
     Customer saveCustomer(Customer customer);
 
     Customer createCustomer(CreateCustomerDTO createCustomerDto);
@@ -21,4 +23,8 @@ public interface CustomerService {
     Customer updateCustomer(Long customerId, UpdateCustomerDTO updateCustomerDto);
 
     Boolean deleteCustomer(Long customerId);
+
+    List<Customer> getCustomerContacts(Long customerId, Pageable pageable);
+
+    void addContactByEmail(Long customerId, String contactEmail);
 }
