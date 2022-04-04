@@ -22,7 +22,7 @@ public abstract class User extends BaseEntity {
     private Long id;
 
     @Column(name = "type")
-    private String type;
+    private UserType type;
 
     // Personal information
     @Column(name = "first_name")
