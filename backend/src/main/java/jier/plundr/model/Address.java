@@ -1,5 +1,6 @@
 package jier.plundr.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jier.plundr.model.enums.Province;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -29,8 +30,10 @@ public class Address extends BaseEntity {
     @Column(name = "zip_code")
     private String zipCode;
     @Column(name = "province")
+    @Enumerated(EnumType.STRING)
     private Province province;
 
     @OneToOne(mappedBy = "address")
+    @JsonBackReference
     private User owningUser;
 }

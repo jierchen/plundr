@@ -1,5 +1,7 @@
 package jier.plundr.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jier.plundr.model.enums.AccountType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -27,6 +29,7 @@ public class Account extends BaseEntity {
 
     // Bank account information
     @Column(name = "account_type")
+    @Enumerated(EnumType.STRING)
     private AccountType accountType;
     @Column(name = "balance")
     private BigDecimal balance;
@@ -37,8 +40,10 @@ public class Account extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name="customer_id")
+    @JsonBackReference
     private Customer owningCustomer;
 
     @OneToMany(mappedBy = "owningAccount", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<Transaction> Transactions;
 }

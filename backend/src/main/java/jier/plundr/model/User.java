@@ -1,5 +1,7 @@
 package jier.plundr.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jier.plundr.model.enums.UserType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,6 +24,7 @@ public abstract class User extends BaseEntity {
     private Long id;
 
     @Column(name = "type")
+    @Enumerated(EnumType.STRING)
     private UserType type;
 
     // Personal information
@@ -37,8 +40,9 @@ public abstract class User extends BaseEntity {
     private String email;
 
     // Address information
-    @OneToOne
-    @JoinColumn(name = "address_id")
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "address_id", referencedColumnName = "address_id")
+    @JsonManagedReference
     private Address address;
 
     // Login information
