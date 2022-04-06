@@ -3,6 +3,7 @@ package jier.plundr.service;
 import jier.plundr.dto.customer.CreateCustomerDTO;
 import jier.plundr.dto.customer.UpdateCustomerDTO;
 import jier.plundr.model.Customer;
+import jier.plundr.model.enums.UserType;
 import jier.plundr.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -47,6 +48,7 @@ public class CustomerServiceImpl implements CustomerService {
     public Customer createCustomer(CreateCustomerDTO createCustomerDto) {
         Customer newCustomer = new Customer();
 
+        // User fields
         newCustomer.setFirstName(createCustomerDto.getFirstName());
         newCustomer.setLastName(createCustomerDto.getLastName());
         newCustomer.setPhoneNumber(createCustomerDto.getPhoneNumber());
@@ -54,6 +56,7 @@ public class CustomerServiceImpl implements CustomerService {
         newCustomer.setEmail(createCustomerDto.getEmail());
         newCustomer.setUsername(createCustomerDto.getUsername());
         newCustomer.setPassword(createCustomerDto.getPassword());
+        newCustomer.setType(UserType.CUSTOMER);
 
         return this.saveCustomer(newCustomer);
     }
