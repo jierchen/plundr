@@ -46,5 +46,5 @@ public class Account extends BaseEntity {
 
     @OneToMany(mappedBy = "owningAccount", cascade = CascadeType.ALL)
     @JsonManagedReference
-    private List<Transaction> Transactions = new ArrayList<>();
+    private List<Transaction> transactions = new ArrayList<>();
 }
