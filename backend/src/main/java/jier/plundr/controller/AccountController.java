@@ -112,9 +112,10 @@ public class AccountController {
     }
 
     @PostMapping("/customer/{id}/setDepositAccount")
-    public ResponseEntity<Void> setDepositAccount(@PathVariable("id") long customerId, @RequestBody long accountId) {
+    public ResponseEntity<Void> setDepositAccount(@PathVariable("id") long customerId,
+                                                  @RequestBody SetDepositAccountDTO setDepositAccountDto) {
         try {
-            accountService.setDepositAccount(customerId, accountId);
+            accountService.setDepositAccount(customerId, setDepositAccountDto.getAccountId());
 
             return new ResponseEntity<>(HttpStatus.OK);
         } catch(Exception e) {
