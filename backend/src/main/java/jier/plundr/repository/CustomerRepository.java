@@ -12,7 +12,10 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
 
     Customer findByEmail(String email);
 
-    @Query(value = "SELECT * FROM CONTACTS c WHERE c.customer_id = ?1",
+    @Query(value =
+            "SELECT * FROM (SELECT contacts.contact_id FROM CONTACTS contacts WHERE contacts.customer_id = ?1) c " +
+            "INNER JOIN CUSTOMER customer ON customer.user_id = c.contact_id " +
+            "INNER JOIN USER user ON user.user_id = c.contact_id",
             countQuery = "SELECT COUNT(*) FROM CONTACTS c WHERE c.customer_id = ?1",
             nativeQuery = true)
     Page<Customer> findContactsByCustomerId(Long customerId, Pageable pageable);
