@@ -1,5 +1,6 @@
 package jier.plundr.controller;
 
+import jier.plundr.dto.customer.AddContactDTO;
 import jier.plundr.dto.customer.CreateCustomerDTO;
 import jier.plundr.dto.customer.UpdateCustomerDTO;
 import jier.plundr.model.Customer;
@@ -87,6 +88,33 @@ public class CustomerController {
             } else {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
+        } catch(Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    // ------------------------ Customer Requests -------------------------//
+
+    @GetMapping("/customer/{id}/contacts")
+    public ResponseEntity<List<Customer>> getCustomerContacts(@PathVariable("id") long customerId,
+                                                              @RequestParam int page, @RequestParam int size) {
+        try {
+            Pageable pageable = PageRequest.of(page, size);
+            List<Customer> contacts = customerService.getCustomerContacts(customerId, pageable);
+
+            return new ResponseEntity<>(contacts, HttpStatus.OK);
+        } catch(Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/customer/{id}/contacts")
+    public ResponseEntity<Void> addCustomerContact(@PathVariable("id") long customerId,
+                                                   @RequestBody AddContactDTO addContactDto) {
+        try {
+            customerService.addContactByEmail(customerId, addContactDto.getContactEmail());
+
+            return new ResponseEntity<>(HttpStatus.OK);
         } catch(Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
