@@ -1,5 +1,6 @@
 package jier.plundr.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jier.plundr.model.enums.UserType;
 import lombok.AllArgsConstructor;
@@ -49,5 +50,6 @@ public abstract class User extends BaseEntity {
     @Column(name = "username")
     private String username;
     @Column(name = "password")
+    @JsonIgnore
     private String password;
 }
