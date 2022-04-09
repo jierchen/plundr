@@ -1,6 +1,8 @@
 package jier.plundr.service;
 
+import jier.plundr.dto.ReturnPageDTO;
 import jier.plundr.dto.transaction.CreateTransactionDTO;
+import jier.plundr.mapper.PageMapper;
 import jier.plundr.model.Account;
 import jier.plundr.model.Transaction;
 import jier.plundr.repository.AccountRepository;
@@ -10,7 +12,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -22,25 +23,29 @@ public class TransactionServiceImpl implements TransactionService {
     @Autowired
     private final AccountRepository accountRepository;
 
-    public TransactionServiceImpl(TransactionRepository transactionRepository, AccountRepository accountRepository) {
+    @Autowired
+    private final PageMapper pageMapper;
+
+    public TransactionServiceImpl(TransactionRepository transactionRepository, AccountRepository accountRepository, PageMapper pageMapper) {
         this.transactionRepository = transactionRepository;
         this.accountRepository = accountRepository;
+        this.pageMapper = pageMapper;
     }
 
     @Override
-    public List<Transaction> findAll(Pageable pageable) {
+    public ReturnPageDTO<Transaction> findAll(Pageable pageable) {
         Page<Transaction> transactionPage = transactionRepository.findAll(pageable);
-        return transactionPage.getContent();
+        return pageMapper.pageToReturnPageDTO(transactionPage);
     }
 
     @Override
-    public List<Transaction> findAllRelatedToAccount(Long accountId, Pageable pageable) {
+    public ReturnPageDTO<Transaction> findAllRelatedToAccount(Long accountId, Pageable pageable) {
         Account account = accountRepository.getById(accountId);
 
         Page<Transaction> transactionPage =
                 transactionRepository.findAllByOwningAccountOrRecipientAccount(account, account, pageable);
 
-        return transactionPage.getContent();
+        return pageMapper.pageToReturnPageDTO(transactionPage);
     }
 
     @Override

@@ -1,8 +1,9 @@
 package jier.plundr.service;
 
+import jier.plundr.dto.ReturnPageDTO;
 import jier.plundr.dto.account.*;
 import jier.plundr.model.Account;
-import jier.plundr.model.enums.AccountType;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
@@ -11,7 +12,7 @@ import java.util.Optional;
 
 public interface AccountService {
 
-    List<Account> findAll(Pageable pageable);
+    ReturnPageDTO<Account> findAll(Pageable pageable);
 
     List<Account> findAllByOwningCustomer(Long customerId);
 

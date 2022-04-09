@@ -1,8 +1,9 @@
 package jier.plundr.service;
 
+import jier.plundr.dto.ReturnPageDTO;
 import jier.plundr.dto.employee.CreateEmployeeDTO;
-import jier.plundr.dto.customer.CreateCustomerDTO;
 import jier.plundr.dto.employee.UpdateEmployeeDTO;
+import jier.plundr.mapper.PageMapper;
 import jier.plundr.model.Employee;
 import jier.plundr.model.enums.UserType;
 import jier.plundr.repository.EmployeeRepository;
@@ -11,7 +12,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -20,14 +20,18 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Autowired
     private final EmployeeRepository employeeRepository;
 
-    public EmployeeServiceImpl(EmployeeRepository employeeRepository) {
+    @Autowired
+    private final PageMapper pageMapper;
+
+    public EmployeeServiceImpl(EmployeeRepository employeeRepository, PageMapper pageMapper) {
         this.employeeRepository = employeeRepository;
+        this.pageMapper = pageMapper;
     }
 
     @Override
-    public List<Employee> findAll(Pageable pageable) {
+    public ReturnPageDTO<Employee> findAll(Pageable pageable) {
         Page<Employee> employeePage = employeeRepository.findAll(pageable);
-        return employeePage.getContent();
+        return pageMapper.pageToReturnPageDTO(employeePage);
     }
 
     @Override

@@ -1,7 +1,9 @@
 package jier.plundr.service;
 
+import jier.plundr.dto.ReturnPageDTO;
 import jier.plundr.dto.address.CreateAddressDTO;
 import jier.plundr.dto.address.UpdateAddressDTO;
+import jier.plundr.mapper.PageMapper;
 import jier.plundr.model.Address;
 import jier.plundr.model.User;
 import jier.plundr.repository.AddressRepository;
@@ -11,7 +13,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -23,15 +24,19 @@ public class AddressServiceImpl implements AddressService {
     @Autowired
     private final UserRepository userRepository;
 
-    public AddressServiceImpl(AddressRepository addressRepository, UserRepository userRepository) {
+    @Autowired
+    private final PageMapper pageMapper;
+
+    public AddressServiceImpl(AddressRepository addressRepository, UserRepository userRepository, PageMapper pageMapper) {
         this.addressRepository = addressRepository;
         this.userRepository = userRepository;
+        this.pageMapper = pageMapper;
     }
 
     @Override
-    public List<Address> findAll(Pageable pageable) {
+    public ReturnPageDTO<Address> findAll(Pageable pageable) {
         Page<Address> addressPage = addressRepository.findAll(pageable);
-        return addressPage.getContent();
+        return pageMapper.pageToReturnPageDTO(addressPage);
     }
 
     @Override

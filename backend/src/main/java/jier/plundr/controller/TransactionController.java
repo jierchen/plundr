@@ -1,5 +1,6 @@
 package jier.plundr.controller;
 
+import jier.plundr.dto.ReturnPageDTO;
 import jier.plundr.model.Transaction;
 import jier.plundr.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,12 +27,12 @@ public class TransactionController {
     // ------------------------ Admin Requests -------------------------//
 
     @GetMapping("/transactions")
-    public ResponseEntity<List<Transaction>> getAllTransactions(@RequestParam int page, @RequestParam int size) {
+    public ResponseEntity<ReturnPageDTO<Transaction>> getAllTransactions(@RequestParam int page, @RequestParam int size) {
         try {
             Pageable pageable = PageRequest.of(page, size);
-            List<Transaction> transactions = transactionService.findAll(pageable);
+            ReturnPageDTO<Transaction> transactionsReturnPage = transactionService.findAll(pageable);
 
-            return new ResponseEntity(transactions, HttpStatus.OK);
+            return new ResponseEntity(transactionsReturnPage, HttpStatus.OK);
         } catch(Exception e) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
@@ -55,14 +56,14 @@ public class TransactionController {
     // ------------------------ Customer Requests -------------------------//
 
     @GetMapping("/account/{id}/transactions")
-    public ResponseEntity<List<Transaction>> getAccountTransactions(@PathVariable("id") long transactionId,
-                                                                    @RequestParam int page,
-                                                                    @RequestParam int size) {
+    public ResponseEntity<ReturnPageDTO<Transaction>> getAccountTransactions(@PathVariable("id") long transactionId,
+                                                                             @RequestParam int page,
+                                                                             @RequestParam int size) {
         try {
             Pageable pageable = PageRequest.of(page, size);
-            List<Transaction> accountTransactions = transactionService.findAllRelatedToAccount(transactionId, pageable);
+            ReturnPageDTO<Transaction> accountTransactionsReturnPage = transactionService.findAllRelatedToAccount(transactionId, pageable);
 
-            return new ResponseEntity<>(accountTransactions, HttpStatus.OK);
+            return new ResponseEntity<>(accountTransactionsReturnPage, HttpStatus.OK);
         } catch(Exception e) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }

@@ -1,7 +1,11 @@
 package jier.plundr.service;
 
+import jier.plundr.dto.ReturnPageDTO;
+import jier.plundr.dto.customer.ContactDTO;
 import jier.plundr.dto.customer.CreateCustomerDTO;
 import jier.plundr.dto.customer.UpdateCustomerDTO;
+import jier.plundr.mapper.CustomerMapper;
+import jier.plundr.mapper.PageMapper;
 import jier.plundr.model.Customer;
 import jier.plundr.model.enums.UserType;
 import jier.plundr.repository.CustomerRepository;
@@ -10,7 +14,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -19,14 +22,22 @@ public class CustomerServiceImpl implements CustomerService {
     @Autowired
     private final CustomerRepository customerRepository;
 
-    public CustomerServiceImpl(CustomerRepository customerRepository) {
+    @Autowired
+    private final PageMapper pageMapper;
+
+    @Autowired
+    private final CustomerMapper customerMapper;
+
+    public CustomerServiceImpl(CustomerRepository customerRepository, PageMapper pageMapper, CustomerMapper customerMapper) {
         this.customerRepository = customerRepository;
+        this.pageMapper = pageMapper;
+        this.customerMapper = customerMapper;
     }
 
     @Override
-    public List<Customer> findAll(Pageable pageable) {
+    public ReturnPageDTO<Customer> findAll(Pageable pageable) {
         Page<Customer> customerPage = customerRepository.findAll(pageable);
-        return customerPage.getContent();
+        return pageMapper.pageToReturnPageDTO(customerPage);
     }
 
     @Override
@@ -93,9 +104,10 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public List<Customer> getCustomerContacts(Long customerId, Pageable pageable) {
+    public ReturnPageDTO<ContactDTO> getCustomerContacts(Long customerId, Pageable pageable) {
         Page<Customer> customerPage = customerRepository.findContactsByCustomerId(customerId, pageable);
-        return customerPage.getContent();
+        ReturnPageDTO<Customer> customerReturnPageDTO = pageMapper.pageToReturnPageDTO(customerPage);
+        return customerMapper.customerPageDTOToContactPageDTO(customerReturnPageDTO);
     }
 
     @Override

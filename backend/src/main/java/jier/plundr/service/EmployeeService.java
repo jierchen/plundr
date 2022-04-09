@@ -1,9 +1,10 @@
 package jier.plundr.service;
 
+import jier.plundr.dto.ReturnPageDTO;
 import jier.plundr.dto.employee.CreateEmployeeDTO;
-import jier.plundr.dto.customer.CreateCustomerDTO;
 import jier.plundr.dto.employee.UpdateEmployeeDTO;
 import jier.plundr.model.Employee;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
@@ -11,7 +12,7 @@ import java.util.Optional;
 
 public interface EmployeeService {
 
-    List<Employee> findAll(Pageable pageable);
+    ReturnPageDTO<Employee> findAll(Pageable pageable);
 
     Optional<Employee> findById(Long employeeId);
 

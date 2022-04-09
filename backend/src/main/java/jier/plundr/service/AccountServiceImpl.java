@@ -1,6 +1,8 @@
 package jier.plundr.service;
 
+import jier.plundr.dto.ReturnPageDTO;
 import jier.plundr.dto.account.*;
+import jier.plundr.mapper.PageMapper;
 import jier.plundr.model.Account;
 import jier.plundr.model.Customer;
 import jier.plundr.model.Transaction;
@@ -48,10 +50,15 @@ public class AccountServiceImpl implements AccountService {
     @Autowired
     private final TransactionRepository transactionRepository;
 
-    public AccountServiceImpl(AccountRepository accountRepository, CustomerRepository customerRepository, TransactionRepository transactionRepository) {
+    @Autowired
+    private final PageMapper pageMapper;
+
+    public AccountServiceImpl(AccountRepository accountRepository, CustomerRepository customerRepository,
+                              TransactionRepository transactionRepository, PageMapper pageMapper) {
         this.accountRepository = accountRepository;
         this.customerRepository = customerRepository;
         this.transactionRepository = transactionRepository;
+        this.pageMapper = pageMapper;
     }
 
     /**
@@ -61,9 +68,9 @@ public class AccountServiceImpl implements AccountService {
      * @return List of found {@code Accounts}.
      */
     @Override
-    public List<Account> findAll(Pageable pageable) {
+    public ReturnPageDTO<Account> findAll(Pageable pageable) {
         Page<Account> accountPage = accountRepository.findAll(pageable);
-        return accountPage.getContent();
+        return pageMapper.pageToReturnPageDTO(accountPage);
     }
 
     /**

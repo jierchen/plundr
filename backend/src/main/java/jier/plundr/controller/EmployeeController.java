@@ -1,5 +1,6 @@
 package jier.plundr.controller;
 
+import jier.plundr.dto.ReturnPageDTO;
 import jier.plundr.dto.employee.CreateEmployeeDTO;
 import jier.plundr.dto.employee.UpdateEmployeeDTO;
 import jier.plundr.model.Employee;
@@ -29,12 +30,12 @@ public class EmployeeController {
     // ------------------------ Admin Requests -------------------------//
 
     @GetMapping("/employees")
-    public ResponseEntity<List<Employee>> getEmployees(@RequestParam int page, @RequestParam int size) {
+    public ResponseEntity<ReturnPageDTO<Employee>> getEmployees(@RequestParam int page, @RequestParam int size) {
         try {
             Pageable pageable = PageRequest.of(page, size);
-            List<Employee> employees = employeeService.findAll(pageable);
+            ReturnPageDTO<Employee> employeesReturnPage = employeeService.findAll(pageable);
 
-            return new ResponseEntity<>(employees, HttpStatus.OK);
+            return new ResponseEntity<>(employeesReturnPage, HttpStatus.OK);
         } catch(Exception e) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }

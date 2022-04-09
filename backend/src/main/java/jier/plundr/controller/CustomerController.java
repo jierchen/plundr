@@ -1,6 +1,8 @@
 package jier.plundr.controller;
 
+import jier.plundr.dto.ReturnPageDTO;
 import jier.plundr.dto.customer.AddContactDTO;
+import jier.plundr.dto.customer.ContactDTO;
 import jier.plundr.dto.customer.CreateCustomerDTO;
 import jier.plundr.dto.customer.UpdateCustomerDTO;
 import jier.plundr.model.Customer;
@@ -29,12 +31,12 @@ public class CustomerController {
     // ------------------------ Admin Requests -------------------------//
 
     @GetMapping("/customers")
-    public ResponseEntity<List<Customer>> getCustomers(@RequestParam int page, @RequestParam int size) {
+    public ResponseEntity<ReturnPageDTO<Customer>> getCustomers(@RequestParam int page, @RequestParam int size) {
         try {
             Pageable pageable = PageRequest.of(page, size);
-            List<Customer> customers = customerService.findAll(pageable);
+            ReturnPageDTO<Customer> customersReturnPage = customerService.findAll(pageable);
 
-            return new ResponseEntity<>(customers, HttpStatus.OK);
+            return new ResponseEntity<>(customersReturnPage, HttpStatus.OK);
         } catch(Exception e) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
@@ -96,13 +98,13 @@ public class CustomerController {
     // ------------------------ Customer Requests -------------------------//
 
     @GetMapping("/customer/{id}/contacts")
-    public ResponseEntity<List<Customer>> getCustomerContacts(@PathVariable("id") long customerId,
+    public ResponseEntity<ReturnPageDTO<ContactDTO>> getCustomerContacts(@PathVariable("id") long customerId,
                                                               @RequestParam int page, @RequestParam int size) {
         try {
             Pageable pageable = PageRequest.of(page, size);
-            List<Customer> contacts = customerService.getCustomerContacts(customerId, pageable);
+            ReturnPageDTO<ContactDTO> contactsReturnPage = customerService.getCustomerContacts(customerId, pageable);
 
-            return new ResponseEntity<>(contacts, HttpStatus.OK);
+            return new ResponseEntity<>(contactsReturnPage, HttpStatus.OK);
         } catch(Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }

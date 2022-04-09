@@ -1,5 +1,6 @@
 package jier.plundr.controller;
 
+import jier.plundr.dto.ReturnPageDTO;
 import jier.plundr.dto.address.CreateAddressDTO;
 import jier.plundr.dto.address.UpdateAddressDTO;
 import jier.plundr.model.Address;
@@ -28,13 +29,13 @@ public class AddressController {
     // ------------------------ Admin Requests -------------------------//
 
     @GetMapping("/addresses")
-    public ResponseEntity<List<Address>> getAllAddresses(@RequestParam int page,
-                                                         @RequestParam(defaultValue = "10") int size) {
+    public ResponseEntity<ReturnPageDTO<Address>> getAllAddresses(@RequestParam int page,
+                                                                  @RequestParam(defaultValue = "10") int size) {
         try {
             Pageable pageable = PageRequest.of(page, size);
-            List<Address> addresses = addressService.findAll(pageable);
+            ReturnPageDTO<Address> addressesReturnPage = addressService.findAll(pageable);
 
-            return new ResponseEntity<>(addresses, HttpStatus.OK);
+            return new ResponseEntity<>(addressesReturnPage, HttpStatus.OK);
         } catch(Exception e) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }

@@ -1,5 +1,6 @@
 package jier.plundr.controller;
 
+import jier.plundr.dto.ReturnPageDTO;
 import jier.plundr.dto.account.*;
 import jier.plundr.model.Account;
 import jier.plundr.service.AccountService;
@@ -33,13 +34,13 @@ public class AccountController {
     // ------------------------ Admin Requests -------------------------//
 
     @GetMapping("/accounts")
-    public ResponseEntity<List<Account>> getAllAccounts(@RequestParam int page,
-                                                        @RequestParam(defaultValue = "10") int size) {
+    public ResponseEntity<ReturnPageDTO<Account>> getAllAccounts(@RequestParam int page,
+                                                                 @RequestParam(defaultValue = "10") int size) {
         try {
             Pageable pageable = PageRequest.of(page, size);
-            List<Account> accounts = accountService.findAll(pageable);
+            ReturnPageDTO<Account> accountsReturnPage = accountService.findAll(pageable);
 
-            return new ResponseEntity<>(accounts, HttpStatus.OK);
+            return new ResponseEntity<>(accountsReturnPage, HttpStatus.OK);
         } catch(Exception e) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
