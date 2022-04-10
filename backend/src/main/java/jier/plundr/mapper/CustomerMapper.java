@@ -10,6 +10,11 @@ import java.util.stream.Collectors;
 @Component
 public class CustomerMapper {
 
+    /**
+     * Maps {@code Customer} to {@code ContactDTO}
+     * @param customer {@code Customer} to map
+     * @return {@ContactDTO} mapped
+     */
     public ContactDTO customerToContactDTO(Customer customer) {
         ContactDTO contactDTO = new ContactDTO();
 
@@ -22,6 +27,11 @@ public class CustomerMapper {
         return contactDTO;
     }
 
+    /**
+     * Maps {@code ReturnPageDTO<Customer>} to {@code ReturnPageDTO<ContactDTO>}
+     * @param customerReturnPageDTO {@code ReturnPageDTO<Customer>} to map
+     * @return {@code ReturnPageDTO<ContactDTO>} mapped
+     */
     public ReturnPageDTO<ContactDTO> customerPageDTOToContactPageDTO(ReturnPageDTO<Customer> customerReturnPageDTO) {
         ReturnPageDTO<ContactDTO> contactDTOReturnPageDTO = new ReturnPageDTO<>();
 

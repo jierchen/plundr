@@ -34,27 +34,58 @@ public class CustomerServiceImpl implements CustomerService {
         this.customerMapper = customerMapper;
     }
 
+    /**
+     * Finds all {@code Customers}.
+     *
+     * @param pageable {@code Pageable} object containing pagination information to limit search results.
+     * @return Page information of found {@code Customers}.
+     */
     @Override
     public ReturnPageDTO<Customer> findAll(Pageable pageable) {
         Page<Customer> customerPage = customerRepository.findAll(pageable);
         return pageMapper.pageToReturnPageDTO(customerPage);
     }
 
+    /**
+     * Finds an {@code Customer} by {@code id}.
+     *
+     * @param customerId {@code id} of {@code Customer} to find.
+     * @return An {@code Optional} object containing the found {@code Customer}
+     *         or {@code null} if {@code Customer} is not found.
+     */
     @Override
     public Optional<Customer> findById(Long customerId) {
         return customerRepository.findById(customerId);
     }
 
+    /**
+     * Finds an {@code Customer} by {@code email}
+     *
+     * @param email {@code email} of {@code Customer} to find
+     * @return The found {@code Customer} or {@code null} if a {@code Customer} is not found
+     */
     @Override
     public Customer findByEmail(String email) {
         return customerRepository.findByEmail(email);
     }
 
+    /**
+     * Saves a {@code Customer} to keep changes made.
+     *
+     * @param customer {@code Customer} to save.
+     * @return {@code Customer} saved.
+     */
     @Override
     public Customer saveCustomer(Customer customer) {
         return customerRepository.save(customer);
     }
 
+    /**
+     * Creates and saves a new {@code Customer}
+     *
+     * @param createCustomerDto {@code CreateCustomerDTO} containing information for {@code Customer} creation
+     * @return {@code Customer} created and saved
+     */
     @Override
     public Customer createCustomer(CreateCustomerDTO createCustomerDto) {
         Customer newCustomer = new Customer();
@@ -72,6 +103,13 @@ public class CustomerServiceImpl implements CustomerService {
         return this.saveCustomer(newCustomer);
     }
 
+    /**
+     * Updates and saves an existing {@code Customer}.
+     *
+     * @param customerId @{code id} of {@code Customer} to update.
+     * @param updateCustomerDto  {@code UpdateCustomerDTO} containing information for {@code Customer} updating.
+     * @return {@code Customer} updated and saved.
+     */
     @Override
     public Customer updateCustomer(Long customerId, UpdateCustomerDTO updateCustomerDto) {
         Customer customer = customerRepository.getById(customerId);
@@ -94,6 +132,12 @@ public class CustomerServiceImpl implements CustomerService {
         return this.saveCustomer(customer);
     }
 
+    /**
+     * Deletes an existing {@code Customer}.
+     *
+     * @param customerId {@code id} of {@code Customer} to delete.
+     * @return Return {@code True} if found {@code Customer} has been successfully deleted, {@code False} otherwise.
+     */
     @Override
     public Boolean deleteCustomer(Long customerId) {
         if(customerRepository.existsById(customerId)) {
@@ -103,6 +147,13 @@ public class CustomerServiceImpl implements CustomerService {
         return false;
     }
 
+    /**
+     * Retrieve {@code Customer} contacts from a {@code Customer}.
+     *
+     * @param customerId {@code id} of {@code Customer} to retrieve contacts.
+     * @param pageable {@code Pageable} object containing pagination information to limit search results.
+     * @return Page information of found {@code Customers} contacts.
+     */
     @Override
     public ReturnPageDTO<ContactDTO> getCustomerContacts(Long customerId, Pageable pageable) {
         Page<Customer> customerPage = customerRepository.findContactsByCustomerId(customerId, pageable);
@@ -110,6 +161,12 @@ public class CustomerServiceImpl implements CustomerService {
         return customerMapper.customerPageDTOToContactPageDTO(customerReturnPageDTO);
     }
 
+    /**
+     * Adds a {@code Customer} contact by {@code email}.
+     *
+     * @param customerId {@code id} of {@code Customer}.
+     * @param contactEmail {@code email} of {@code Customer} contact.
+     */
     @Override
     public void addContactByEmail(Long customerId, String contactEmail) {
         Customer customer = customerRepository.getById(customerId);

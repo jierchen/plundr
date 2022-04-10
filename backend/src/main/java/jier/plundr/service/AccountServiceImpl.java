@@ -65,7 +65,7 @@ public class AccountServiceImpl implements AccountService {
      * Finds all {@code Accounts}.
      *
      * @param pageable {@code Pageable} object containing pagination information to limit search results.
-     * @return List of found {@code Accounts}.
+     * @return Page information of found {@code Accounts}.
      */
     @Override
     public ReturnPageDTO<Account> findAll(Pageable pageable) {
@@ -76,7 +76,7 @@ public class AccountServiceImpl implements AccountService {
     /**
      * Finds all {@code Accounts} belonging to a {@code Customer}.
      *
-     * @param customerId ID of {@code Customer} owning the {@code Accounts}.
+     * @param customerId {@code id} of {@code Customer} owning the {@code Accounts}.
      * @return List of {@code Accounts} belonging to found {@code Customer}.
      */
     @Override
@@ -111,7 +111,7 @@ public class AccountServiceImpl implements AccountService {
     /**
      * Creates and saves a new {@code Account}.
      *
-     * @param createAccountDto  {@code CreateAccountDTO} containing information limited to {@code Account} creation.
+     * @param createAccountDto  {@code CreateAccountDTO} containing information for {@code Account} creation.
      * @return {@code Account} created and saved.
      */
     @Override
@@ -140,7 +140,7 @@ public class AccountServiceImpl implements AccountService {
      * Updates and saves an existing {@code Account}.
      *
      * @param accountId @{code id} of {@code Account} to update.
-     * @param updateAccountDto  {@code CreateAccountDTO} containing information limited to {@code Account} updating.
+     * @param updateAccountDto  {@code CreateAccountDTO} containing information for {@code Account} updating.
      * @return {@code Account} updated and saved.
      */
     @Override

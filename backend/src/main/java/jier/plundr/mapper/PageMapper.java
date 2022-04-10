@@ -9,6 +9,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class PageMapper {
 
+    /**
+     * Maps {@code Page<T>} to {@code ReturnPageDTO<T>}
+     *
+     * @param page {@code Page} object to map
+     * @param <T> Content type of the {@code Page}
+     * @return {@code ReturnPageDTO<T>} mapped
+     */
     public <T> ReturnPageDTO<T> pageToReturnPageDTO(Page<T> page) {
         ReturnPageDTO<T> returnPageDTO = new ReturnPageDTO<>();
 

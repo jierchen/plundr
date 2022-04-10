@@ -32,12 +32,24 @@ public class TransactionServiceImpl implements TransactionService {
         this.pageMapper = pageMapper;
     }
 
+    /**
+     * Finds all {@code Transactions}.
+     *
+     * @param pageable {@code Pageable} object containing pagination information to limit search results.
+     * @return Page information of found {@code Transactions}.
+     */
     @Override
     public ReturnPageDTO<Transaction> findAll(Pageable pageable) {
         Page<Transaction> transactionPage = transactionRepository.findAll(pageable);
         return pageMapper.pageToReturnPageDTO(transactionPage);
     }
 
+    /**
+     * Finds all {@code Transactions} related to an {@code Account}.
+     * @param accountId {@code id} of {@code Account}.
+     * @param pageable {@code Pageable} object containing pagination information to limit search results.
+     * @return Page information of found {@code Transactions}.
+     */
     @Override
     public ReturnPageDTO<Transaction> findAllRelatedToAccount(Long accountId, Pageable pageable) {
         Account account = accountRepository.getById(accountId);
@@ -48,16 +60,35 @@ public class TransactionServiceImpl implements TransactionService {
         return pageMapper.pageToReturnPageDTO(transactionPage);
     }
 
+    /**
+     * Finds an {@code Transaction} by {@code id}.
+     *
+     * @param transactionId {@code id} of {@code Transaction} to find.
+     * @return An {@code Optional} object containing the found {@code Transaction}
+     *         or {@code null} if {@code Transaction} is not found.
+     */
     @Override
     public Optional<Transaction> findById(Long transactionId) {
         return transactionRepository.findById(transactionId);
     }
 
+    /**
+     * Saves a {@code Transaction} to keep changes made.
+     *
+     * @param transaction {@code Transaction} to save.
+     * @return {@code Transaction} saved.
+     */
     @Override
     public Transaction saveTransaction(Transaction transaction) {
         return transactionRepository.save(transaction);
     }
 
+    /**
+     * Creates and saves a new {@code Transaction}
+     *
+     * @param createTransactionDto {@code CreateTransactionDTO} containing information for {@code Transaction} creation
+     * @return {@code Transaction} created and saved
+     */
     @Override
     public Transaction createTransaction(CreateTransactionDTO createTransactionDto) {
         Transaction transaction = new Transaction();
@@ -78,6 +109,12 @@ public class TransactionServiceImpl implements TransactionService {
         return this.saveTransaction(transaction);
     }
 
+    /**
+     * Deletes an existing {@code Transaction}.
+     *
+     * @param transactionId {@code id} of {@code Transaction} to delete.
+     * @return Return {@code True} if found {@code Transaction} has been successfully deleted, {@code False} otherwise.
+     */
     @Override
     public Boolean deleteTransaction(Long transactionId) {
         if(transactionRepository.existsById(transactionId)) {

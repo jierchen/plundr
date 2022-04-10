@@ -28,22 +28,47 @@ public class EmployeeServiceImpl implements EmployeeService {
         this.pageMapper = pageMapper;
     }
 
+    /**
+     * Finds all {@code Employees}.
+     *
+     * @param pageable {@code Pageable} object containing pagination information to limit search results.
+     * @return Page information of found {@code Employees}.
+     */
     @Override
     public ReturnPageDTO<Employee> findAll(Pageable pageable) {
         Page<Employee> employeePage = employeeRepository.findAll(pageable);
         return pageMapper.pageToReturnPageDTO(employeePage);
     }
 
+    /**
+     * Finds an {@code Employee} by {@code id}.
+     *
+     * @param employeeId {@code id} of {@code Employee} to find.
+     * @return An {@code Optional} object containing the found {@code Employee}
+     *         or {@code null} if {@code Employee} is not found.
+     */
     @Override
     public Optional<Employee> findById(Long employeeId) {
         return employeeRepository.findById(employeeId);
     }
 
+    /**
+     * Saves a {@code Employee} to keep changes made.
+     *
+     * @param employee {@code Employee} to save.
+     * @return {@code Employee} saved.
+     */
     @Override
     public Employee saveEmployee(Employee employee) {
         return employeeRepository.save(employee);
     }
 
+    /**
+     * Creates and saves a new {@code Employee}
+     *
+     * @param createEmployeeDto {@code CreateEmployeeDTO} containing information for {@code Employee} creation
+     * @return {@code Employee} created and saved
+     */
     @Override
     public Employee createEmployee(CreateEmployeeDTO createEmployeeDto) {
         Employee newEmployee = new Employee();
@@ -64,6 +89,13 @@ public class EmployeeServiceImpl implements EmployeeService {
         return this.saveEmployee(newEmployee);
     }
 
+    /**
+     * Updates and saves an existing {@code Employee}.
+     *
+     * @param employeeId @{code id} of {@code Employee} to update.
+     * @param updateEmployeeDto  {@code UpdateEmployeeDTO} containing information for {@code Employee} updating.
+     * @return {@code Employee} updated and saved.
+     */
     @Override
     public Employee updateEmployee(Long employeeId, UpdateEmployeeDTO updateEmployeeDto) {
         Employee employee = employeeRepository.getById(employeeId);
@@ -91,6 +123,12 @@ public class EmployeeServiceImpl implements EmployeeService {
         return this.saveEmployee(employee);
     }
 
+    /**
+     * Deletes an existing {@code Employee}.
+     *
+     * @param employeeId {@code id} of {@code Employee} to delete.
+     * @return Return {@code True} if found {@code Employee} has been successfully deleted, {@code False} otherwise.
+     */
     @Override
     public Boolean deleteEmployee(Long employeeId) {
         if(employeeRepository.existsById(employeeId)) {

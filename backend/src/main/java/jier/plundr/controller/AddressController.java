@@ -44,7 +44,7 @@ public class AddressController {
     @GetMapping("/address/{id}")
     public ResponseEntity<Address> getAddress(@PathVariable("id") long addressId) {
         try {
-            Optional<Address> optionalAddress = addressService.findAddressById(addressId);
+            Optional<Address> optionalAddress = addressService.findById(addressId);
 
             if(optionalAddress.isPresent()) {
                 return new ResponseEntity<>(optionalAddress.get(), HttpStatus.OK);

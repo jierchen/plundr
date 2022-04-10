@@ -14,7 +14,7 @@ public interface AddressService {
 
     ReturnPageDTO<Address> findAll(Pageable pageable);
 
-    Optional<Address> findAddressById(Long id);
+    Optional<Address> findById(Long addressId);
 
     Address saveAddress(Address address);
 
