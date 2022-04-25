@@ -10,6 +10,7 @@ import jier.plundr.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -18,15 +19,13 @@ import java.util.Optional;
 public class EmployeeServiceImpl implements EmployeeService {
 
     @Autowired
-    private final EmployeeRepository employeeRepository;
+    private EmployeeRepository employeeRepository;
 
     @Autowired
-    private final PageMapper pageMapper;
+    private PageMapper pageMapper;
 
-    public EmployeeServiceImpl(EmployeeRepository employeeRepository, PageMapper pageMapper) {
-        this.employeeRepository = employeeRepository;
-        this.pageMapper = pageMapper;
-    }
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     /**
      * Finds all {@code Employees}.
@@ -80,7 +79,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         newEmployee.setDateOfBirth(createEmployeeDto.getDateOfBirth());
         newEmployee.setEmail(createEmployeeDto.getEmail());
         newEmployee.setUsername(createEmployeeDto.getUsername());
-        newEmployee.setPassword(createEmployeeDto.getPassword());
+        newEmployee.setPassword(passwordEncoder.encode(createEmployeeDto.getPassword()));
         newEmployee.setType(UserType.EMPLOYEE);
 
         // Employee fields

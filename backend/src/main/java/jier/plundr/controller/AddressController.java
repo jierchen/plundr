@@ -20,11 +20,7 @@ import java.util.Optional;
 public class AddressController {
 
     @Autowired
-    private final AddressService addressService;
-
-    public AddressController(AddressService addressService) {
-        this.addressService = addressService;
-    }
+    private AddressService addressService;
 
     // ------------------------ Admin Requests -------------------------//
 

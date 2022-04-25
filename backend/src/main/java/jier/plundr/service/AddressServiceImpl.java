@@ -19,19 +19,13 @@ import java.util.Optional;
 public class AddressServiceImpl implements AddressService {
 
     @Autowired
-    private final AddressRepository addressRepository;
+    private AddressRepository addressRepository;
 
     @Autowired
-    private final UserRepository userRepository;
+    private UserRepository userRepository;
 
     @Autowired
-    private final PageMapper pageMapper;
-
-    public AddressServiceImpl(AddressRepository addressRepository, UserRepository userRepository, PageMapper pageMapper) {
-        this.addressRepository = addressRepository;
-        this.userRepository = userRepository;
-        this.pageMapper = pageMapper;
-    }
+    private PageMapper pageMapper;
 
     /**
      * Finds all {@code Addresses}.

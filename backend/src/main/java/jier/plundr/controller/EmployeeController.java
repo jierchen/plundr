@@ -21,11 +21,7 @@ import java.util.Optional;
 public class EmployeeController {
 
     @Autowired
-    private final EmployeeService employeeService;
-
-    public EmployeeController(EmployeeService employeeService) {
-        this.employeeService = employeeService;
-    }
+    private EmployeeService employeeService;
 
     // ------------------------ Admin Requests -------------------------//
 

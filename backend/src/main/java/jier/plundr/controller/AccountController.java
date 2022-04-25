@@ -20,16 +20,10 @@ import java.util.Optional;
 public class AccountController {
 
     @Autowired
-    private final AccountService accountService;
+    private AccountService accountService;
 
     @Autowired
-    private final CustomerService customerService;
-
-
-    public AccountController(AccountService accountService, CustomerService customerService) {
-        this.accountService = accountService;
-        this.customerService = customerService;
-    }
+    private CustomerService customerService;
 
     // ------------------------ Admin Requests -------------------------//
 

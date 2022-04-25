@@ -22,11 +22,7 @@ import java.util.Optional;
 public class CustomerController {
 
     @Autowired
-    private final CustomerService customerService;
-
-    public CustomerController(CustomerService customerService) {
-        this.customerService = customerService;
-    }
+    private CustomerService customerService;
 
     // ------------------------ Admin Requests -------------------------//
 

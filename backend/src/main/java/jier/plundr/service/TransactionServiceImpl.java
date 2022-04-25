@@ -18,19 +18,13 @@ import java.util.Optional;
 public class TransactionServiceImpl implements TransactionService {
 
     @Autowired
-    private final TransactionRepository transactionRepository;
+    private TransactionRepository transactionRepository;
 
     @Autowired
-    private final AccountRepository accountRepository;
+    private AccountRepository accountRepository;
 
     @Autowired
-    private final PageMapper pageMapper;
-
-    public TransactionServiceImpl(TransactionRepository transactionRepository, AccountRepository accountRepository, PageMapper pageMapper) {
-        this.transactionRepository = transactionRepository;
-        this.accountRepository = accountRepository;
-        this.pageMapper = pageMapper;
-    }
+    private PageMapper pageMapper;
 
     /**
      * Finds all {@code Transactions}.

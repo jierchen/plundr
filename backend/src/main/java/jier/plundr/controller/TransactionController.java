@@ -18,11 +18,7 @@ import java.util.Optional;
 public class TransactionController {
 
     @Autowired
-    private final TransactionService transactionService;
-
-    public TransactionController(TransactionService transactionService) {
-        this.transactionService = transactionService;
-    }
+    private TransactionService transactionService;
 
     // ------------------------ Admin Requests -------------------------//
 

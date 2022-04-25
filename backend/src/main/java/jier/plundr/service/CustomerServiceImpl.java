@@ -12,6 +12,7 @@ import jier.plundr.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -20,19 +21,16 @@ import java.util.Optional;
 public class CustomerServiceImpl implements CustomerService {
 
     @Autowired
-    private final CustomerRepository customerRepository;
+    private CustomerRepository customerRepository;
 
     @Autowired
-    private final PageMapper pageMapper;
+    private PageMapper pageMapper;
 
     @Autowired
-    private final CustomerMapper customerMapper;
+    private CustomerMapper customerMapper;
 
-    public CustomerServiceImpl(CustomerRepository customerRepository, PageMapper pageMapper, CustomerMapper customerMapper) {
-        this.customerRepository = customerRepository;
-        this.pageMapper = pageMapper;
-        this.customerMapper = customerMapper;
-    }
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     /**
      * Finds all {@code Customers}.
@@ -97,7 +95,7 @@ public class CustomerServiceImpl implements CustomerService {
         newCustomer.setDateOfBirth(createCustomerDto.getDateOfBirth());
         newCustomer.setEmail(createCustomerDto.getEmail());
         newCustomer.setUsername(createCustomerDto.getUsername());
-        newCustomer.setPassword(createCustomerDto.getPassword());
+        newCustomer.setPassword(passwordEncoder.encode(createCustomerDto.getPassword()));
         newCustomer.setType(UserType.CUSTOMER);
 
         return this.saveCustomer(newCustomer);

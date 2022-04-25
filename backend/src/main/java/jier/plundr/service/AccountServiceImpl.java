@@ -42,25 +42,16 @@ public class AccountServiceImpl implements AccountService {
     );
 
     @Autowired
-    private final AccountRepository accountRepository;
+    private AccountRepository accountRepository;
 
     @Autowired
-    private final CustomerRepository customerRepository;
+    private CustomerRepository customerRepository;
 
     @Autowired
-    private final TransactionRepository transactionRepository;
+    private TransactionRepository transactionRepository;
 
     @Autowired
-    private final PageMapper pageMapper;
-
-    public AccountServiceImpl(AccountRepository accountRepository, CustomerRepository customerRepository,
-                              TransactionRepository transactionRepository, PageMapper pageMapper) {
-        this.accountRepository = accountRepository;
-        this.customerRepository = customerRepository;
-        this.transactionRepository = transactionRepository;
-        this.pageMapper = pageMapper;
-    }
-
+    private PageMapper pageMapper;
     /**
      * Finds all {@code Accounts}.
      *
