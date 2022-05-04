@@ -68,4 +68,12 @@ public class UserDetailsImpl implements UserDetails {
     public User getUser() {
         return user;
     }
+
+    public Long getId() {
+        return user.getId();
+    }
+
+    public Boolean isCustomerUser() {
+        return user.getType() == UserType.CUSTOMER;
+    }
 }
