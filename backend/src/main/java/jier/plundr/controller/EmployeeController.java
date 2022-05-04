@@ -25,7 +25,7 @@ public class EmployeeController {
 
     // ------------------------ Admin Requests -------------------------//
 
-    @GetMapping("/employees")
+    @GetMapping("/admin/employees")
     public ResponseEntity<ReturnPageDTO<Employee>> getEmployees(@RequestParam int page, @RequestParam int size) {
         try {
             Pageable pageable = PageRequest.of(page, size);
@@ -37,7 +37,7 @@ public class EmployeeController {
         }
     }
 
-    @GetMapping("/employee/{id}")
+    @GetMapping("/admin/employee/{id}")
     public ResponseEntity<Employee> getEmployee(@PathVariable("id") long employeeId) {
         try {
             Optional<Employee> optionalEmployee = employeeService.findById(employeeId);
@@ -52,7 +52,7 @@ public class EmployeeController {
         }
     }
 
-    @PostMapping("/employee")
+    @PostMapping("/admin/employee")
     public ResponseEntity<Employee> createEmployee(@RequestBody CreateEmployeeDTO createEmployeeDto) {
         try {
             Employee newEmployee = employeeService.createEmployee(createEmployeeDto);
@@ -63,7 +63,7 @@ public class EmployeeController {
         }
     }
 
-    @PutMapping("/employee/{id}")
+    @PutMapping("/admin/employee/{id}")
     public ResponseEntity<Employee> updateEmployee(@PathVariable("id") long employeeId,
                                                    @RequestBody UpdateEmployeeDTO updateEmployeeDto) {
         try {
@@ -75,7 +75,7 @@ public class EmployeeController {
         }
     }
 
-    @DeleteMapping("/employee/{id}")
+    @DeleteMapping("/admin/employee/{id}")
     public ResponseEntity<Void> deleteEmployee(@PathVariable("id") long employeeId) {
         try {
             Boolean isDeleted = employeeService.deleteEmployee(employeeId);

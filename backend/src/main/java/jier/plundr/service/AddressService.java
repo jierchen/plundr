@@ -18,9 +18,11 @@ public interface AddressService {
 
     Address saveAddress(Address address);
 
-    Address createAddress(CreateAddressDTO createAddressDto);
+    Address createAddress(Long userId, CreateAddressDTO createAddressDto);
 
-    Address updateAddress(Long addressId, UpdateAddressDTO updateAddressDto);
+    Address updateAddress(Long userId, UpdateAddressDTO updateAddressDto);
 
-    Boolean deleteAddress(Long addressId);
+    Boolean deleteAddress(Long userId);
+
+    Address findAddressByUserId(Long userId);
 }

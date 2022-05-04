@@ -12,7 +12,6 @@ import lombok.Setter;
 @Getter
 public class CreateAddressDTO {
 
-    private Long userId;
     private String streetAddress;
     private String city;
     private String zipCode;

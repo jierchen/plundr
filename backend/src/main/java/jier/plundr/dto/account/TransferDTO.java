@@ -13,7 +13,6 @@ import java.math.BigDecimal;
 @Getter
 public class TransferDTO {
 
-    private Long senderAccountId;
     private Long recipientAccountId;
     private BigDecimal amount;
     private String Description;

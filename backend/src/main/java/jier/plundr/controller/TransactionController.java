@@ -22,7 +22,7 @@ public class TransactionController {
 
     // ------------------------ Admin Requests -------------------------//
 
-    @GetMapping("/transactions")
+    @GetMapping("/admin/transactions")
     public ResponseEntity<ReturnPageDTO<Transaction>> getAllTransactions(@RequestParam int page, @RequestParam int size) {
         try {
             Pageable pageable = PageRequest.of(page, size);
@@ -34,7 +34,7 @@ public class TransactionController {
         }
     }
 
-    @GetMapping("/transaction/{id}")
+    @GetMapping("/admin/transaction/{id}")
     public ResponseEntity<Transaction> getTransaction(@PathVariable("id") long transactionId) {
         try {
             Optional<Transaction> optionalTransaction = transactionService.findById(transactionId);
@@ -52,12 +52,13 @@ public class TransactionController {
     // ------------------------ Customer Requests -------------------------//
 
     @GetMapping("/account/{id}/transactions")
-    public ResponseEntity<ReturnPageDTO<Transaction>> getAccountTransactions(@PathVariable("id") long transactionId,
+    public ResponseEntity<ReturnPageDTO<Transaction>> getAccountTransactions(@PathVariable("id") long accountId,
                                                                              @RequestParam int page,
                                                                              @RequestParam int size) {
         try {
             Pageable pageable = PageRequest.of(page, size);
-            ReturnPageDTO<Transaction> accountTransactionsReturnPage = transactionService.findAllRelatedToAccount(transactionId, pageable);
+            ReturnPageDTO<Transaction> accountTransactionsReturnPage =
+                    transactionService.findAllRelatedToAccount(accountId, pageable);
 
             return new ResponseEntity<>(accountTransactionsReturnPage, HttpStatus.OK);
         } catch(Exception e) {

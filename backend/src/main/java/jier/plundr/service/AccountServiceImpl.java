@@ -11,6 +11,7 @@ import jier.plundr.model.enums.TransactionType;
 import jier.plundr.repository.AccountRepository;
 import jier.plundr.repository.CustomerRepository;
 import jier.plundr.repository.TransactionRepository;
+import jier.plundr.validation.AccountValidator;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -52,6 +53,10 @@ public class AccountServiceImpl implements AccountService {
 
     @Autowired
     private PageMapper pageMapper;
+
+    @Autowired
+    private AccountValidator accountValidator;
+
     /**
      * Finds all {@code Accounts}.
      *
@@ -102,18 +107,18 @@ public class AccountServiceImpl implements AccountService {
     /**
      * Creates and saves a new {@code Account}.
      *
+     * @param customerId {@code id} of {@code Customer} owning the new {@code Account}.
      * @param createAccountDto  {@code CreateAccountDTO} containing information for {@code Account} creation.
      * @return {@code Account} created and saved.
      */
     @Override
-    public Account createAccount(CreateAccountDTO createAccountDto) {
-        Customer owningCustomer = customerRepository.getById(createAccountDto.getOwningCustomerId());
+    public Account createAccount(Long customerId, CreateAccountDTO createAccountDto) {
+        Customer owningCustomer = customerRepository.getById(customerId);
 
         Account newAccount = new Account();
         newAccount.setAccountType(createAccountDto.getAccountType());
         newAccount.setOwningCustomer(owningCustomer);
         newAccount.setBalance(new BigDecimal("0.00"));
-        // newAccount.setTransactions(new ArrayList<Transaction>());
 
         AccountTypeData data = ACCOUNT_TYPE_MAP.get(createAccountDto.getAccountType());
 
@@ -130,36 +135,44 @@ public class AccountServiceImpl implements AccountService {
     /**
      * Updates and saves an existing {@code Account}.
      *
-     * @param accountId @{code id} of {@code Account} to update.
+     * @param customerId {@code id} of belonging {@code Customer}
+     * @param accountId {@code id} of {@code Account} to update.
      * @param updateAccountDto  {@code CreateAccountDTO} containing information for {@code Account} updating.
      * @return {@code Account} updated and saved.
      */
     @Override
-    public Account updateAccount(Long accountId, UpdateAccountDTO updateAccountDto) {
+    public Account updateAccount(Long customerId, Long accountId, UpdateAccountDTO updateAccountDto) {
         Account account = accountRepository.getById(accountId);
 
-        AccountTypeData data = ACCOUNT_TYPE_MAP.get(updateAccountDto.getAccountType());
+        if (accountValidator.isCustomerAccount(customerId, account)) {
+            AccountTypeData data = ACCOUNT_TYPE_MAP.get(updateAccountDto.getAccountType());
 
-        if(data == null) {
-            return null;
-        } else {
-            account.setAccountType(updateAccountDto.getAccountType());
-            account.setWithdrawFee(data.getWithdrawFee());
-            account.setInterestRate(data.getInterestRate());
+            if (data == null) {
+                return null;
+            } else {
+                account.setAccountType(updateAccountDto.getAccountType());
+                account.setWithdrawFee(data.getWithdrawFee());
+                account.setInterestRate(data.getInterestRate());
+            }
+
+            return accountRepository.save(account);
         }
 
-        return accountRepository.save(account);
+        return account;
     }
 
     /**
      * Deletes an existing {@code Account}.
      *
+     * @param customerId {@code id} of belonging {@code Customer}
      * @param accountId {@code id} of {@code Account} to delete.
      * @return Return {@code True} if found {@code Account} has been successfully deleted, {@code False} otherwise.
      */
     @Override
-    public Boolean deleteAccount(Long accountId) {
-        if(accountRepository.existsById(accountId)){
+    public Boolean deleteAccount(Long customerId, Long accountId) {
+        Account account = accountRepository.getById(accountId);
+
+        if(accountValidator.isCustomerAccount(customerId, account)){
             accountRepository.deleteById(accountId);
             return true;
         }
@@ -169,15 +182,15 @@ public class AccountServiceImpl implements AccountService {
     /**
      * Sets the {@code depositAccount} for a {@code Customer}.
      *
-     * @param customerId {@code id} of Customer.
+     * @param customerId {@code id} of belonging {@code Customer}
      * @param accountId {@code id} of Account to set as {@code depositAccount}.
      */
     @Override
     public void setDepositAccount(Long customerId, Long accountId) {
-        Customer customer = customerRepository.getById(customerId);
         Account account = accountRepository.getById(accountId);
 
-        if(account.getOwningCustomer().getId() == customerId) {
+        if(accountValidator.isCustomerAccount(customerId, account)){
+            Customer customer = customerRepository.getById(customerId);
             customer.setDepositAccount(account);
         }
     }
@@ -185,84 +198,97 @@ public class AccountServiceImpl implements AccountService {
     /**
      * Makes a deposit for an {@code Account}.
      *
+     * @param customerId {@code id} of belonging {@code Customer}
+     * @param accountId {@code id} of {@code Account} for deposit.
      * @param depositDto {@code DepositDTO} containing information for a deposit.
      */
     @Override
-    public void deposit(DepositDTO depositDto) {
-        BigDecimal amount = depositDto.getAmount();
+    public void deposit(Long customerId, Long accountId, DepositDTO depositDto) {
+        Account account = accountRepository.getById(accountId);
 
-        assert amount.compareTo(BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP)) > 0;
+        if(accountValidator.isCustomerAccount(customerId, account)) {
+            BigDecimal amount = depositDto.getAmount();
 
-        Account account = accountRepository.getById(depositDto.getAccountId());
-        account.setBalance(account.getBalance().add(amount));
+            assert amount.compareTo(BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP)) > 0;
 
-        Transaction depositTransaction = new Transaction();
-        depositTransaction.setTransactionType(TransactionType.DEPOSIT);
-        depositTransaction.setAmount(amount);
-        depositTransaction.setDescription(String.format("Deposit: %s", depositDto.getDescription()));
-        depositTransaction.setOwningAccount(account);
+            account.setBalance(account.getBalance().add(amount));
 
-        transactionRepository.save(depositTransaction);
-        accountRepository.save(account);
+            Transaction depositTransaction = new Transaction();
+            depositTransaction.setTransactionType(TransactionType.DEPOSIT);
+            depositTransaction.setAmount(amount);
+            depositTransaction.setDescription(depositDto.getDescription());
+            depositTransaction.setOwningAccount(account);
+
+            transactionRepository.save(depositTransaction);
+            accountRepository.save(account);
+        }
     }
 
     /**
      * Makes a deposit for an {@code Account}.
      *
-     * @param withdrawDto {@code WithdrawDTO} containing information for a withdraw.
+     * @param customerId {@code id} of belonging {@code Customer}
+     * @param accountId {@code id} of {@code Account} for withdraw.
+     * @param withdrawDto {@code WithdrawDTO} containing information for a withdrawal.
      */
     @Override
-    public void withdraw(WithdrawDTO withdrawDto) {
-        BigDecimal amount = withdrawDto.getAmount();
-        assert amount.compareTo(BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP)) > 0;
+    public void withdraw(Long customerId, Long accountId, WithdrawDTO withdrawDto) {
+        Account account = accountRepository.getById(accountId);
 
-        Account account = accountRepository.getById(withdrawDto.getAccountId());
-        account.setBalance(account.getBalance().subtract(amount));
+        if(accountValidator.isCustomerAccount(customerId, account)) {
+            BigDecimal amount = withdrawDto.getAmount();
+            assert amount.compareTo(BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP)) > 0;
 
-        Transaction withdrawTransaction = new Transaction();
-        withdrawTransaction.setTransactionType(TransactionType.WITHDRAW);
-        withdrawTransaction.setAmount(amount);
-        withdrawTransaction.setDescription(String.format("Withdraw: %s", withdrawDto.getDescription()));
-        withdrawTransaction.setOwningAccount(account);
+            assert account.getBalance().compareTo(amount) > 0;
+            account.setBalance(account.getBalance().subtract(amount));
 
-        transactionRepository.save(withdrawTransaction);
-        accountRepository.save(account);
+            Transaction withdrawTransaction = new Transaction();
+            withdrawTransaction.setTransactionType(TransactionType.WITHDRAW);
+            withdrawTransaction.setAmount(amount);
+            withdrawTransaction.setDescription(withdrawDto.getDescription());
+            withdrawTransaction.setOwningAccount(account);
+
+            transactionRepository.save(withdrawTransaction);
+            accountRepository.save(account);
+        }
     }
 
     /**
      * Makes a transfer for an {@code Account}.
      *
+     * @param customerId {@code id} of belonging {@code Customer}
+     * @param accountId {@code id} of sender {@code Account} for transfer.
      * @param transferDto {@code TransferDTO} containing information for a transfer.
      */
     @Override
-    public void transfer(TransferDTO transferDto) {
-        BigDecimal amount = transferDto.getAmount();
+    public void transfer(Long customerId, Long accountId, TransferDTO transferDto) {
+        Account senderAccount = accountRepository.getById(accountId);
 
-        assert amount.compareTo(BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP)) > 0;
+        if(accountValidator.isCustomerAccount(customerId, senderAccount)) {
+            BigDecimal amount = transferDto.getAmount();
+            assert amount.compareTo(BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP)) > 0;
 
-        Account senderAccount = accountRepository.getById(transferDto.getSenderAccountId());
-        Account recipientAccount = accountRepository.getById(transferDto.getRecipientAccountId());
-        assert senderAccount.getBalance().compareTo(amount) > 0;
-        senderAccount.setBalance(senderAccount.getBalance().subtract(amount));
-        recipientAccount.setBalance(recipientAccount.getBalance().add(amount));
+            Account recipientAccount = accountRepository.getById(transferDto.getRecipientAccountId());
+            assert senderAccount.getBalance().compareTo(amount) > 0;
+            senderAccount.setBalance(senderAccount.getBalance().subtract(amount));
+            recipientAccount.setBalance(recipientAccount.getBalance().add(amount));
 
-        Transaction transferTransaction = new Transaction();
-        transferTransaction.setOwningAccount(senderAccount);
-        transferTransaction.setRecipientAccount(recipientAccount);
-        transferTransaction.setAmount(amount);
+            Transaction transferTransaction = new Transaction();
+            transferTransaction.setOwningAccount(senderAccount);
+            transferTransaction.setRecipientAccount(recipientAccount);
+            transferTransaction.setAmount(amount);
 
-        if(senderAccount.getOwningCustomer().getId().equals(recipientAccount.getOwningCustomer().getId())) {
-            transferTransaction.setTransactionType(TransactionType.INT_TRANSFER);
-            transferTransaction.setDescription(
-                    String.format("Internal transfer: %s", transferDto.getDescription()));
-        } else {
-            transferTransaction.setTransactionType(TransactionType.EXT_TRANSFER);
-            transferTransaction.setDescription(
-                    String.format("External transfer: %s", transferDto.getDescription()));
+            if (senderAccount.getOwningCustomer().getId().equals(recipientAccount.getOwningCustomer().getId())) {
+                transferTransaction.setTransactionType(TransactionType.INT_TRANSFER);
+                transferTransaction.setDescription(transferDto.getDescription());
+            } else {
+                transferTransaction.setTransactionType(TransactionType.EXT_TRANSFER);
+                transferTransaction.setDescription(transferDto.getDescription());
+            }
+
+            transactionRepository.save(transferTransaction);
+            accountRepository.save(senderAccount);
+            accountRepository.save(recipientAccount);
         }
-
-        transactionRepository.save(transferTransaction);
-        accountRepository.save(senderAccount);
-        accountRepository.save(recipientAccount);
     }
 }

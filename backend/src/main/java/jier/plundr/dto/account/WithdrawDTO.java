@@ -13,7 +13,6 @@ import java.math.BigDecimal;
 @Getter
 public class WithdrawDTO {
 
-    private Long accountId;
     private BigDecimal amount;
     private String description;
 }

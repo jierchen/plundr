@@ -12,6 +12,5 @@ import lombok.Setter;
 @Getter
 public class CreateAccountDTO {
 
-    private Long owningCustomerId;
     private AccountType accountType;
 }

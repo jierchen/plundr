@@ -8,6 +8,7 @@ import jier.plundr.model.Address;
 import jier.plundr.model.User;
 import jier.plundr.repository.AddressRepository;
 import jier.plundr.repository.UserRepository;
+import jier.plundr.validation.AddressValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +27,9 @@ public class AddressServiceImpl implements AddressService {
 
     @Autowired
     private PageMapper pageMapper;
+
+    @Autowired
+    private AddressValidator addressValidator;
 
     /**
      * Finds all {@code Addresses}.
@@ -63,14 +67,15 @@ public class AddressServiceImpl implements AddressService {
     }
 
     /**
-     * Creates and saves a new {@code Address}
+     * Creates and saves a new {@code Address}.
      *
+     * @param userId {@code id} of belonging {@User}
      * @param createAddressDto {@code CreateAddressDTO} containing information for {@code Address} creation
      * @return {@code Address} created and saved
      */
     @Override
-    public Address createAddress(CreateAddressDTO createAddressDto) {
-        User owningUser = userRepository.getById(createAddressDto.getUserId());
+    public Address createAddress(Long userId, CreateAddressDTO createAddressDto) {
+        User owningUser = userRepository.getById(userId);
 
         Address newAddress = new Address();
         newAddress.setStreetAddress(createAddressDto.getStreetAddress());
@@ -79,28 +84,34 @@ public class AddressServiceImpl implements AddressService {
         newAddress.setZipCode(createAddressDto.getZipCode());
         newAddress.setOwningUser(owningUser);
 
-        return this.saveAddress(newAddress);
+        owningUser.setAddress(this.saveAddress(newAddress));
+        userRepository.save(owningUser);
+
+        return newAddress;
     }
 
     /**
      * Updates and saves an existing {@code Address}.
      *
-     * @param addressId @{code id} of {@code Address} to update.
+     * @param userId {@code id} of {@User} associated with the {@code Address}
      * @param updateAddressDto  {@code UpdateAddressDTO} containing information for {@code Address} updating.
      * @return {@code Address} updated and saved.
      */
     @Override
-    public Address updateAddress(Long addressId, UpdateAddressDTO updateAddressDto) {
-        Address address =  addressRepository.getById(addressId);
+    public Address updateAddress(Long userId, UpdateAddressDTO updateAddressDto) {
+        User user = userRepository.getById(userId);
+        Address address =  user.getAddress();
 
-        if(updateAddressDto.getStreetAddress() != null)
-            address.setStreetAddress(updateAddressDto.getStreetAddress());
-        if(updateAddressDto.getCity() != null)
-            address.setCity(updateAddressDto.getCity());
-        if(updateAddressDto.getProvince() != null)
-            address.setProvince(updateAddressDto.getProvince());
-        if(updateAddressDto.getZipCode() != null)
-            address.setZipCode(updateAddressDto.getZipCode());
+        if (addressValidator.isUserAddress(userId, address)) {
+            if (updateAddressDto.getStreetAddress() != null)
+                address.setStreetAddress(updateAddressDto.getStreetAddress());
+            if (updateAddressDto.getCity() != null)
+                address.setCity(updateAddressDto.getCity());
+            if (updateAddressDto.getProvince() != null)
+                address.setProvince(updateAddressDto.getProvince());
+            if (updateAddressDto.getZipCode() != null)
+                address.setZipCode(updateAddressDto.getZipCode());
+        }
 
         return this.saveAddress(address);
     }
@@ -108,15 +119,32 @@ public class AddressServiceImpl implements AddressService {
     /**
      * Deletes an existing {@code Address}.
      *
-     * @param addressId {@code id} of {@code Address} to delete.
+     * @param userId {@code id} of {@User} associated with the {@code Address}
      * @return Return {@code True} if found {@code Address} has been successfully deleted, {@code False} otherwise.
      */
     @Override
-    public Boolean deleteAddress(Long addressId) {
-        if(addressRepository.existsById(addressId)){
-            addressRepository.deleteById(addressId);
+    public Boolean deleteAddress(Long userId) {
+        User user = userRepository.getById(userId);
+        Address address =  user.getAddress();
+
+        if (addressValidator.isUserAddress(userId, address)) {
+            user.setAddress(null);
+            addressRepository.deleteById(address.getId());
+            userRepository.save(user);
             return true;
         }
+
         return false;
+    }
+
+    /**
+     * Retrieves the {@code Address} of its associated {@code User}
+     * @param userId userId {@code id} of {@User} associated with the {@code Address}
+     * @return {@code Address} of the found {@code User}
+     */
+    public Address findAddressByUserId(Long userId) {
+        User user = userRepository.getById(userId);
+
+        return user.getAddress();
     }
 }
