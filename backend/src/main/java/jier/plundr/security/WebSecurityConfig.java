@@ -32,7 +32,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .cors()
                 .and()
             .authorizeRequests()
-                .antMatchers("/", "/customerLogin", "/signup", "/customerLogout").permitAll()
+                .antMatchers("/", "/customerLogin", "/signup", "/customerLogout", "/h2-console/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
             .formLogin()
@@ -41,6 +41,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .logoutUrl("/logout")
                 .and()
             .csrf().disable()
+            .headers().frameOptions().disable()
+                .and()
             .httpBasic();
 
     }
