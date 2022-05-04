@@ -34,12 +34,10 @@ public class Transaction extends BaseEntity {
     private String description;
     @ManyToOne
     @JoinColumn(name="account_id")
-    @JsonBackReference
     private Account owningAccount;
 
     // Transfer information
     @ManyToOne
     @JoinColumn(name="recipient_id")
-    @JsonBackReference
     private Account recipientAccount;
 }

@@ -1,6 +1,7 @@
 package jier.plundr.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jier.plundr.model.enums.AccountType;
 import lombok.AllArgsConstructor;
@@ -21,6 +22,7 @@ import java.util.List;
 @NoArgsConstructor
 @Setter
 @Getter
+@JsonIgnoreProperties({"transactions", "contacts"})
 public class Account extends BaseEntity {
 
     @Id
@@ -45,6 +47,5 @@ public class Account extends BaseEntity {
     private Customer owningCustomer;
 
     @OneToMany(mappedBy = "owningAccount", cascade = CascadeType.ALL)
-    @JsonManagedReference
     private List<Transaction> transactions = new ArrayList<>();
 }
