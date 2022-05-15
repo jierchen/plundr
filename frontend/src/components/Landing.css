@@ -1,0 +1,19 @@
+.landing-section {
+    background-color: #282c34;
+    height: 100%;
+    color: white;
+    align-items: center;
+    justify-content: center;
+
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+}
+
+.landing-section-content {
+    grid-column: 2 / 3;
+    grid-row: 2 / 3;
+    text-align: center;
+
+    font-size: 10vh;
+}
