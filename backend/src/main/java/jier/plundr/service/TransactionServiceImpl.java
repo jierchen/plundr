@@ -2,7 +2,9 @@ package jier.plundr.service;
 
 import jier.plundr.dto.ReturnPageDTO;
 import jier.plundr.dto.transaction.CreateTransactionDTO;
+import jier.plundr.dto.transaction.TransactionDTO;
 import jier.plundr.mapper.PageMapper;
+import jier.plundr.mapper.TransactionMapper;
 import jier.plundr.model.Account;
 import jier.plundr.model.Transaction;
 import jier.plundr.repository.AccountRepository;
@@ -26,6 +28,9 @@ public class TransactionServiceImpl implements TransactionService {
     @Autowired
     private PageMapper pageMapper;
 
+    @Autowired
+    private TransactionMapper transactionMapper;
+
     /**
      * Finds all {@code Transactions}.
      *
@@ -45,13 +50,13 @@ public class TransactionServiceImpl implements TransactionService {
      * @return Page information of found {@code Transactions}.
      */
     @Override
-    public ReturnPageDTO<Transaction> findAllRelatedToAccount(Long accountId, Pageable pageable) {
-        Account account = accountRepository.getById(accountId);
+    public ReturnPageDTO<TransactionDTO> findAllRelatedToAccount(Long accountId, Pageable pageable) {
+        Optional<Account> account = accountRepository.findById(accountId);
 
         Page<Transaction> transactionPage =
-                transactionRepository.findAllByOwningAccountOrRecipientAccount(account, account, pageable);
-
-        return pageMapper.pageToReturnPageDTO(transactionPage);
+                transactionRepository.findAllByOwningAccountOrRecipientAccount(account.get(), account.get(), pageable);
+        ReturnPageDTO<Transaction> transactionReturnPageDTO = pageMapper.pageToReturnPageDTO(transactionPage);
+        return transactionMapper.transactionPageToTransactionPageDTO(transactionReturnPageDTO);
     }
 
     /**

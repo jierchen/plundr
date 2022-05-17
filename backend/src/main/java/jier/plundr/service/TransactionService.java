@@ -2,6 +2,7 @@ package jier.plundr.service;
 
 import jier.plundr.dto.ReturnPageDTO;
 import jier.plundr.dto.transaction.CreateTransactionDTO;
+import jier.plundr.dto.transaction.TransactionDTO;
 import jier.plundr.model.Transaction;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,7 +14,7 @@ public interface TransactionService {
 
     ReturnPageDTO<Transaction> findAll(Pageable pageable);
 
-    ReturnPageDTO<Transaction> findAllRelatedToAccount(Long accountId, Pageable pageable);
+    ReturnPageDTO<TransactionDTO> findAllRelatedToAccount(Long accountId, Pageable pageable);
 
     Optional<Transaction> findById(Long transactionId);
 

@@ -1,6 +1,7 @@
 package jier.plundr.controller;
 
 import jier.plundr.dto.ReturnPageDTO;
+import jier.plundr.dto.transaction.TransactionDTO;
 import jier.plundr.model.Transaction;
 import jier.plundr.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,12 +53,12 @@ public class TransactionController {
     // ------------------------ Customer Requests -------------------------//
 
     @GetMapping("/account/{id}/transactions")
-    public ResponseEntity<ReturnPageDTO<Transaction>> getAccountTransactions(@PathVariable("id") long accountId,
+    public ResponseEntity<ReturnPageDTO<TransactionDTO>> getAccountTransactions(@PathVariable("id") long accountId,
                                                                              @RequestParam int page,
                                                                              @RequestParam int size) {
         try {
             Pageable pageable = PageRequest.of(page, size);
-            ReturnPageDTO<Transaction> accountTransactionsReturnPage =
+            ReturnPageDTO<TransactionDTO> accountTransactionsReturnPage =
                     transactionService.findAllRelatedToAccount(accountId, pageable);
 
             return new ResponseEntity<>(accountTransactionsReturnPage, HttpStatus.OK);
