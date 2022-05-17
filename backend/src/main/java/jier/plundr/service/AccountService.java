@@ -30,5 +30,7 @@ public interface AccountService {
 
     void withdraw(Long customerId, Long accountId, WithdrawDTO withdrawDto);
 
-    void transfer(Long customerId, Long accountId, TransferDTO transferDto);
+    void internalTransfer(Long customerId, Long accountId, InternalTransferDTO internalTransferDto);
+
+    void externalTransfer(Long customerId, Long accountId, ExternalTransferDTO externalTransferDto);
 }

@@ -11,10 +11,10 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @Setter
 @Getter
-public class TransferDTO {
+public class InternalTransferDTO {
 
     private Long recipientAccountId;
     private BigDecimal amount;
-    private String Description;
+    private String description;
 
 }

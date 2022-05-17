@@ -117,6 +117,7 @@ public class AccountServiceImpl implements AccountService {
 
         Account newAccount = new Account();
         newAccount.setAccountType(createAccountDto.getAccountType());
+        newAccount.setName(createAccountDto.getName());
         newAccount.setOwningCustomer(owningCustomer);
         newAccount.setBalance(new BigDecimal("0.00"));
 
@@ -145,11 +146,13 @@ public class AccountServiceImpl implements AccountService {
         Account account = accountRepository.getById(accountId);
 
         if (accountValidator.isCustomerAccount(customerId, account)) {
+            if(updateAccountDto.getName() != null) {
+                account.setName(updateAccountDto.getName());
+            }
+
             AccountTypeData data = ACCOUNT_TYPE_MAP.get(updateAccountDto.getAccountType());
 
-            if (data == null) {
-                return null;
-            } else {
+            if (data != null) {
                 account.setAccountType(updateAccountDto.getAccountType());
                 account.setWithdrawFee(data.getWithdrawFee());
                 account.setInterestRate(data.getInterestRate());
@@ -192,6 +195,7 @@ public class AccountServiceImpl implements AccountService {
         if(accountValidator.isCustomerAccount(customerId, account)){
             Customer customer = customerRepository.getById(customerId);
             customer.setDepositAccount(account);
+            customerRepository.save(customer);
         }
     }
 
@@ -254,41 +258,74 @@ public class AccountServiceImpl implements AccountService {
     }
 
     /**
-     * Makes a transfer for an {@code Account}.
+     * Makes an internal transfer to an owned {@code Account}.
      *
-     * @param customerId {@code id} of belonging {@code Customer}
+     * @param customerId {@code id} of {@code Customer}
      * @param accountId {@code id} of sender {@code Account} for transfer.
-     * @param transferDto {@code TransferDTO} containing information for a transfer.
+     * @param internalTransferDto {@code InternalTransferDTO} containing information for the internal transfer.
      */
     @Override
-    public void transfer(Long customerId, Long accountId, TransferDTO transferDto) {
+    public void internalTransfer(Long customerId, Long accountId, InternalTransferDTO internalTransferDto) {
         Account senderAccount = accountRepository.getById(accountId);
 
         if(accountValidator.isCustomerAccount(customerId, senderAccount)) {
-            BigDecimal amount = transferDto.getAmount();
+            BigDecimal amount = internalTransferDto.getAmount();
             assert amount.compareTo(BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP)) > 0;
 
-            Account recipientAccount = accountRepository.getById(transferDto.getRecipientAccountId());
+            Account recipientAccount = accountRepository.getById(internalTransferDto.getRecipientAccountId());
+
+            if(accountValidator.isCustomerAccount(customerId, recipientAccount)
+                    && senderAccount.getId() != recipientAccount.getId()) {
+                assert senderAccount.getBalance().compareTo(amount) > 0;
+                senderAccount.setBalance(senderAccount.getBalance().subtract(amount));
+                recipientAccount.setBalance(recipientAccount.getBalance().add(amount));
+
+                Transaction transferTransaction = new Transaction();
+                transferTransaction.setOwningAccount(senderAccount);
+                transferTransaction.setRecipientAccount(recipientAccount);
+                transferTransaction.setAmount(amount);
+                transferTransaction.setTransactionType(TransactionType.INT_TRANSFER);
+                transferTransaction.setDescription(internalTransferDto.getDescription());
+
+                transactionRepository.save(transferTransaction);
+                accountRepository.save(senderAccount);
+                accountRepository.save(recipientAccount);
+            }
+        }
+    }
+
+    /**
+     * Makes an external transfer to a contact's deposit {@code Account}.
+     *
+     * @param customerId {@code id} of {@code Customer}
+     * @param accountId {@code id} of sender {@code Account} for transfer.
+     * @param externalTransferDto {@code InternalTransferDTO} containing information for the external transfer.
+     */
+    @Override
+    public void externalTransfer(Long customerId, Long accountId, ExternalTransferDTO externalTransferDto) {
+        Account senderAccount = accountRepository.getById(accountId);
+
+        if(accountValidator.isCustomerAccount(customerId, senderAccount)) {
+            BigDecimal amount = externalTransferDto.getAmount();
+            assert amount.compareTo(BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP)) > 0;
+
+            Customer recipient = customerRepository.getById(externalTransferDto.getRecipientId());
+            Account recipientDepositAccount = recipient.getDepositAccount();
+
             assert senderAccount.getBalance().compareTo(amount) > 0;
             senderAccount.setBalance(senderAccount.getBalance().subtract(amount));
-            recipientAccount.setBalance(recipientAccount.getBalance().add(amount));
+            recipientDepositAccount.setBalance(recipientDepositAccount.getBalance().add(amount));
 
             Transaction transferTransaction = new Transaction();
             transferTransaction.setOwningAccount(senderAccount);
-            transferTransaction.setRecipientAccount(recipientAccount);
+            transferTransaction.setRecipientAccount(recipientDepositAccount);
             transferTransaction.setAmount(amount);
-
-            if (senderAccount.getOwningCustomer().getId().equals(recipientAccount.getOwningCustomer().getId())) {
-                transferTransaction.setTransactionType(TransactionType.INT_TRANSFER);
-                transferTransaction.setDescription(transferDto.getDescription());
-            } else {
-                transferTransaction.setTransactionType(TransactionType.EXT_TRANSFER);
-                transferTransaction.setDescription(transferDto.getDescription());
-            }
+            transferTransaction.setTransactionType(TransactionType.EXT_TRANSFER);
+            transferTransaction.setDescription(externalTransferDto.getDescription());
 
             transactionRepository.save(transferTransaction);
             accountRepository.save(senderAccount);
-            accountRepository.save(recipientAccount);
+            accountRepository.save(recipientDepositAccount);
         }
     }
 }

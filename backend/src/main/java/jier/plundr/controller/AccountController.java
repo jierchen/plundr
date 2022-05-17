@@ -114,8 +114,8 @@ public class AccountController {
 
     @PutMapping("/account/{id}")
     public ResponseEntity<Account> updateCustomerAccount(@AuthenticationPrincipal UserDetailsImpl userDetails,
-                                                 @PathVariable("id") long accountId,
-                                                 @RequestBody UpdateAccountDTO updateAccountDto) {
+                                                         @PathVariable("id") long accountId,
+                                                         @RequestBody UpdateAccountDTO updateAccountDto) {
         try {
             Account account = accountService.updateAccount(userDetails.getId(), accountId, updateAccountDto);
 
@@ -152,7 +152,7 @@ public class AccountController {
         }
     }
 
-    @PostMapping("setDepositAccount")
+    @PostMapping("depositAccount")
     public ResponseEntity<Void> setCustomerDepositAccount(@AuthenticationPrincipal UserDetailsImpl userDetails,
                                                           @RequestBody SetDepositAccountDTO setDepositAccountDto) {
         try {
@@ -191,12 +191,25 @@ public class AccountController {
         }
     }
 
-    @PostMapping("/account/{id}/transfer")
-    public ResponseEntity<Void> transferBetweenAccounts(@AuthenticationPrincipal UserDetailsImpl userDetails,
-                                                        @PathVariable("id") long accountId,
-                                                        @RequestBody TransferDTO transferDTO) {
+    @PostMapping("/account/{id}/internalTransfer")
+    public ResponseEntity<Void> internalTransferBetweenAccounts(@AuthenticationPrincipal UserDetailsImpl userDetails,
+                                                                @PathVariable("id") long accountId,
+                                                                @RequestBody InternalTransferDTO internalTransferDto) {
         try {
-            accountService.transfer(userDetails.getId(), accountId, transferDTO);
+            accountService.internalTransfer(userDetails.getId(), accountId, internalTransferDto);
+
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch(Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/account/{id}/externalTransfer")
+    public ResponseEntity<Void> externalTransferToContact(@AuthenticationPrincipal UserDetailsImpl userDetails,
+                                                          @PathVariable("id") long accountId,
+                                                          @RequestBody ExternalTransferDTO externalTransferDto) {
+        try {
+            accountService.externalTransfer(userDetails.getId(), accountId, externalTransferDto);
 
             return new ResponseEntity<>(HttpStatus.OK);
         } catch(Exception e) {
