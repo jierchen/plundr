@@ -24,12 +24,13 @@ function Login(props) {
 
     async function handleLogin(event) {
         event.preventDefault();
-        axios.post("http://localhost:8080/customerLogin", loginData, {
+        await axios.post("http://localhost:8080/customerLogin", loginData, {
             headers: {
-                "Content-Type": "application/json"
+                "Accept": "application/json",
+                "Content-Type": "application/json",
             }
         }).then(res => {
-            props.handleUserLogin();
+            props.handleUserLogin(loginData.username, loginData.password);
             navigate("/profile")
         }).catch(err => {
             console.log("Login failed")
