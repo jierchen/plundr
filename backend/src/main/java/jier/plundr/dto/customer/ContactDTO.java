@@ -13,10 +13,10 @@ import java.time.LocalDate;
 @Setter
 public class ContactDTO {
 
+    private Long id;
     private String firstName;
     private String lastName;
     private String phoneNumber;
-    private LocalDate dateOfBirth;
     private String email;
 
 }

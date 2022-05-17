@@ -11,16 +11,16 @@ import java.util.stream.Collectors;
 public class CustomerMapper {
 
     /**
-     * Maps {@code Customer} to {@code ContactDTO}
-     * @param customer {@code Customer} to map
-     * @return {@ContactDTO} mapped
+     * Maps {@code Customer} to {@code ContactDTO}.
+     * @param customer {@code Customer} to map.
+     * @return {@code ContactDTO} mapped.
      */
     public ContactDTO customerToContactDTO(Customer customer) {
         ContactDTO contactDTO = new ContactDTO();
 
+        contactDTO.setId(customer.getId());
         contactDTO.setFirstName(customer.getFirstName());
         contactDTO.setLastName(customer.getLastName());
-        contactDTO.setDateOfBirth(customer.getDateOfBirth());
         contactDTO.setPhoneNumber(customer.getPhoneNumber());
         contactDTO.setEmail(customer.getEmail());
 
@@ -28,9 +28,9 @@ public class CustomerMapper {
     }
 
     /**
-     * Maps {@code ReturnPageDTO<Customer>} to {@code ReturnPageDTO<ContactDTO>}
-     * @param customerReturnPageDTO {@code ReturnPageDTO<Customer>} to map
-     * @return {@code ReturnPageDTO<ContactDTO>} mapped
+     * Maps {@code ReturnPageDTO<Customer>} to {@code ReturnPageDTO<ContactDTO>}.
+     * @param customerReturnPageDTO {@code ReturnPageDTO<Customer>} to map.
+     * @return {@code ReturnPageDTO<ContactDTO>} mapped.
      */
     public ReturnPageDTO<ContactDTO> customerPageDTOToContactPageDTO(ReturnPageDTO<Customer> customerReturnPageDTO) {
         ReturnPageDTO<ContactDTO> contactDTOReturnPageDTO = new ReturnPageDTO<>();
