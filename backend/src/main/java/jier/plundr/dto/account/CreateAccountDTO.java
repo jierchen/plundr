@@ -12,5 +12,6 @@ import lombok.Setter;
 @Getter
 public class CreateAccountDTO {
 
+    private String name;
     private AccountType accountType;
 }

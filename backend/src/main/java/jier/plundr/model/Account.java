@@ -34,6 +34,8 @@ public class Account extends BaseEntity {
     @Column(name = "account_type")
     @Enumerated(EnumType.STRING)
     private AccountType accountType;
+    @Column(name = "name")
+    private String name;
     @Column(name = "balance")
     private BigDecimal balance;
     @Column(name = "interest_rate")

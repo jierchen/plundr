@@ -12,5 +12,6 @@ import lombok.Setter;
 @Getter
 public class UpdateAccountDTO {
 
+    private String name;
     private AccountType accountType;
 }
