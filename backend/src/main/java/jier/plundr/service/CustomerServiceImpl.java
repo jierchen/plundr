@@ -112,20 +112,20 @@ public class CustomerServiceImpl implements CustomerService {
     public Customer updateCustomer(Long customerId, UpdateCustomerDTO updateCustomerDto) {
         Customer customer = customerRepository.getById(customerId);
 
-        if(updateCustomerDto.getFirstName() == null)
+        if(updateCustomerDto.getFirstName() != null)
             customer.setFirstName(updateCustomerDto.getFirstName());
-        if(updateCustomerDto.getLastName() == null)
+        if(updateCustomerDto.getLastName() != null)
             customer.setLastName(updateCustomerDto.getLastName());
-        if(updateCustomerDto.getPhoneNumber() == null)
+        if(updateCustomerDto.getPhoneNumber() != null)
             customer.setPhoneNumber(updateCustomerDto.getPhoneNumber());
-        if(updateCustomerDto.getDateOfBirth() == null)
+        if(updateCustomerDto.getDateOfBirth() != null)
             customer.setDateOfBirth(updateCustomerDto.getDateOfBirth());
-        if(updateCustomerDto.getEmail() == null)
+        if(updateCustomerDto.getEmail() != null)
             customer.setEmail(updateCustomerDto.getEmail());
-        if(updateCustomerDto.getUsername() == null)
+        if(updateCustomerDto.getUsername() != null)
             customer.setUsername(updateCustomerDto.getUsername());
-        if(updateCustomerDto.getPassword() == null)
-            customer.setPassword(updateCustomerDto.getPassword());
+        if(updateCustomerDto.getPassword() != null)
+            customer.setPassword(passwordEncoder.encode(updateCustomerDto.getPassword()));
 
         return this.saveCustomer(customer);
     }
@@ -172,5 +172,16 @@ public class CustomerServiceImpl implements CustomerService {
 
         customer.getContacts().add(contact);
         this.saveCustomer(customer);
+    }
+
+    @Override
+    public Boolean deleteContactById(Long customerId, Long contactId) {
+        try {
+            customerRepository.deleteContactByContactId(customerId, contactId);
+
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

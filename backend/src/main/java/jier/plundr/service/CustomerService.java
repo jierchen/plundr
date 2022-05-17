@@ -30,4 +30,6 @@ public interface CustomerService {
     ReturnPageDTO<ContactDTO> getCustomerContacts(Long customerId, Pageable pageable);
 
     void addContactByEmail(Long customerId, String contactEmail);
+
+    Boolean deleteContactById(Long customerId, Long contactId);
 }

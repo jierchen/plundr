@@ -146,4 +146,20 @@ public class CustomerController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
+
+    @DeleteMapping("/contact/{id}")
+    public ResponseEntity<Void> deleteCustomerContact(@AuthenticationPrincipal UserDetailsImpl userDetails,
+                                                      @PathVariable("id") long contactId) {
+        try {
+            Boolean isDeleted = customerService.deleteContactById(userDetails.getId(), contactId);
+
+            if(isDeleted) {
+                return new ResponseEntity<>(HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+        } catch(Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
 }
