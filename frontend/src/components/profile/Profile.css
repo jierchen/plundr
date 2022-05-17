@@ -1,0 +1,19 @@
+#profile {
+    display: grid;
+    height: 100%;
+    width: 100%;
+    grid-template-columns: 12% auto;
+}
+
+#sidebar {
+    height: auto;
+    width: auto;
+    min-width: 113px;
+    padding: 8px;
+
+    border-right: 2px solid #212529;
+}
+
+#profile-main {
+    padding: 2rem;
+}
