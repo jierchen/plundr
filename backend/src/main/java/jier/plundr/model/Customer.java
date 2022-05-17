@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +24,7 @@ public class Customer extends User {
 
     // Customer bank accounts
     @OneToMany(mappedBy = "owningCustomer", cascade = CascadeType.ALL)
+    @Size(max = 5)
     private List<Account> accounts = new ArrayList<>();
 
     @OneToOne
@@ -37,5 +39,6 @@ public class Customer extends User {
             joinColumns =  @JoinColumn(name = "customer_id"),
             inverseJoinColumns = @JoinColumn(name = "contact_id")
     )
+    @Size(max = 100)
     private List<Customer> contacts = new ArrayList<>();
 }

@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.Digits;
+import javax.validation.constraints.PositiveOrZero;
 import java.math.BigDecimal;
 
 @Entity
@@ -18,6 +20,8 @@ public class Employee extends User {
 
     // Employee information
     @Column(name = "salary")
+    @Digits(integer = 7, fraction = 2)
+    @PositiveOrZero
     private BigDecimal salary;
 }
 
