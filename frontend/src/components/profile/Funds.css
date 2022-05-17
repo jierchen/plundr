@@ -1,0 +1,8 @@
+#funds-page {
+    display: grid;
+    grid-auto-flow: column;
+}
+
+#funds-success-card {
+    margin: auto 20vw;
+}
