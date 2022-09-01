@@ -12,7 +12,7 @@ public interface AccountService {
 
     ReturnPageDTO<Account> findAll(Pageable pageable);
 
-    List<Account> findAllByOwningCustomer(Long customerId);
+    List<AccountDTO> findAllByOwningCustomer(Long customerId);
 
     Optional<Account> findById(Long accountId);
 

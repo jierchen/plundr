@@ -2,6 +2,7 @@ package jier.plundr.service;
 
 import jier.plundr.dto.ReturnPageDTO;
 import jier.plundr.dto.account.*;
+import jier.plundr.mapper.AccountMapper;
 import jier.plundr.mapper.PageMapper;
 import jier.plundr.model.Account;
 import jier.plundr.model.Customer;
@@ -19,9 +20,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -55,6 +58,9 @@ public class AccountServiceImpl implements AccountService {
     private PageMapper pageMapper;
 
     @Autowired
+    private AccountMapper accountMapper;
+
+    @Autowired
     private AccountValidator accountValidator;
 
     /**
@@ -76,9 +82,23 @@ public class AccountServiceImpl implements AccountService {
      * @return List of {@code Accounts} belonging to found {@code Customer}.
      */
     @Override
-    public List<Account> findAllByOwningCustomer(Long customerId) {
+    public List<AccountDTO> findAllByOwningCustomer(Long customerId) {
         Customer owningCustomer = customerRepository.getById(customerId);
-        return accountRepository.findAllByOwningCustomer(owningCustomer);
+        List<AccountDTO> accountDTOList = new ArrayList<>();
+        List<Account> accountList = accountRepository.findAllByOwningCustomer(owningCustomer);
+
+        // Convert each Account to AccountDTO
+        for(Account account : accountList) {
+            Boolean isDepositAccount = false;
+
+            if(owningCustomer.getDepositAccount() != null) {
+                isDepositAccount = owningCustomer.getDepositAccount().getId() == account.getId();
+            }
+            AccountDTO accountDTO = accountMapper.accountToAccountDTO(account, isDepositAccount);
+            accountDTOList.add(accountDTO);
+        }
+
+        return accountDTOList;
     }
 
     /**
@@ -207,6 +227,7 @@ public class AccountServiceImpl implements AccountService {
      * @param depositDto {@code DepositDTO} containing information for a deposit.
      */
     @Override
+    @Transactional
     public void deposit(Long customerId, Long accountId, DepositDTO depositDto) {
         Account account = accountRepository.getById(accountId);
 
@@ -236,6 +257,7 @@ public class AccountServiceImpl implements AccountService {
      * @param withdrawDto {@code WithdrawDTO} containing information for a withdrawal.
      */
     @Override
+    @Transactional
     public void withdraw(Long customerId, Long accountId, WithdrawDTO withdrawDto) {
         Account account = accountRepository.getById(accountId);
 
@@ -302,6 +324,7 @@ public class AccountServiceImpl implements AccountService {
      * @param externalTransferDto {@code InternalTransferDTO} containing information for the external transfer.
      */
     @Override
+    @Transactional
     public void externalTransfer(Long customerId, Long accountId, ExternalTransferDTO externalTransferDto) {
         Account senderAccount = accountRepository.getById(accountId);
 

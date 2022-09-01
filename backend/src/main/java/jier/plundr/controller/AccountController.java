@@ -142,9 +142,9 @@ public class AccountController {
     }
 
     @GetMapping("/accounts")
-    public ResponseEntity<List<Account>> getCustomerAccounts(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseEntity<List<AccountDTO>> getCustomerAccounts(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         try {
-            List<Account> customerAccounts = accountService.findAllByOwningCustomer(userDetails.getId());
+            List<AccountDTO> customerAccounts = accountService.findAllByOwningCustomer(userDetails.getId());
 
             return new ResponseEntity<>(customerAccounts, HttpStatus.OK);
         } catch(Exception e) {
