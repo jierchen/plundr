@@ -2,6 +2,7 @@ import axios from 'axios';
 import React, { useContext, useEffect, useState } from 'react';
 import { Button, Modal, ModalBody, ModalFooter, Table } from 'reactstrap';
 import { CredentialsContext } from '../../App';
+import { BsCheckCircle } from 'react-icons/bs';
 import CreateNewAccountModal from './account/CreateNewAccountModal';
 import Transactions from './account/Transactions';
 
@@ -64,6 +65,18 @@ function Accounts(props) {
         })
     }
 
+    async function setDepositAccount(accountId) {
+        await axios.post("http://localhost:8080/api/depositAccount", {accountId: accountId}, {
+            auth: credentials,
+        })
+        .then(async (res) => {
+            await retrieveAccounts();
+        })
+        .catch(err => {
+            console.log("Error setting deposit account")
+        });
+    }
+
     const accountsRows = accounts ? accounts.map(account => {
         return (
             <tr key={account.id}>
@@ -71,6 +84,11 @@ function Accounts(props) {
                 <td>{account.name}</td>
                 <td>{account.accountType}</td>
                 <td>{parseFloat(account.balance).toFixed(2)}</td>
+                <td>
+                    <Button color="primary" disabled={account.isDepositAccount} onClick={() => setDepositAccount(account.id)}>
+                            Set
+                    </Button>
+                 </td>
                 <td>
                     <Button color="info" onClick={() => setIsTransactionsModalOpen(true)}>
                         Check Transactions
@@ -87,7 +105,7 @@ function Accounts(props) {
                         </Modal>
                     </Button>
                     {' '}
-                    <Button color="danger" onClick={async () => await removeAccount(account.id)}>
+                    <Button color="danger" onClick={() => removeAccount(account.id)}>
                         Delete
                     </Button>
                 </td>
@@ -121,6 +139,7 @@ function Accounts(props) {
                             <th>Name</th>
                             <th>Type</th>
                             <th>Balance</th>
+                            <th>Set As Deposit Account</th>
                             <th>Options</th>
                         </tr>
                     </thead>
