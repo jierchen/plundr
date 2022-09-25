@@ -16,6 +16,7 @@ import javax.validation.constraints.Size;
 import java.time.LocalDate;
 
 @Entity
+@Table(name = "users")
 @Inheritance(strategy = InheritanceType.JOINED)
 @AllArgsConstructor
 @NoArgsConstructor
