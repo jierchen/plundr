@@ -130,7 +130,7 @@ function Funds(props) {
                                 <Label for="fundAccount">Account</Label>
                                 <Input type="select" name="fundAccount" id="fundAccount" onChange={(event) => {
                                     setFundAccountId(parseInt(event.target.value))
-                                    if(parseInt(event.target.value) == internalTransferAccountId) {
+                                    if(parseInt(event.target.value) === internalTransferAccountId) {
                                         setInternalTransferAccountId(null);
                                     }
                                 }}>
@@ -159,7 +159,7 @@ function Funds(props) {
                                                 </option>
                                                 {accounts.map((account) => {
                                                     return (
-                                                        <option disabled={fundAccountId == account.id} key={account.id} value={account.id}>
+                                                        <option disabled={fundAccountId === account.id} key={account.id} value={account.id}>
                                                             {account.name + " - $" + parseFloat(account.balance).toFixed(2)}
                                                         </option>
                                                     );

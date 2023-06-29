@@ -13,6 +13,10 @@ function CreateNewAccountModal(props) {
             accountType: accountType,
         })
 
+        // Reset values
+        setAccountType("CHEQUING")
+        setName("")
+
         props.closeModal();
     }
 
@@ -25,7 +29,7 @@ function CreateNewAccountModal(props) {
                 <ModalBody>
                         <FormGroup>
                             <Label for="accountType">Account Type</Label>
-                            <Input type="select" name="accountType" id="accountType" onChange={(event) => setAccountType(event.target.value)}>
+                            <Input type="select" name="accountType" id="accountType" value={accountType} onChange={(event) => setAccountType(event.target.value)}>
                                 <option>
                                     CHEQUING
                                 </option>
@@ -36,7 +40,7 @@ function CreateNewAccountModal(props) {
                         </FormGroup>
                         <FormGroup>
                             <Label for="name">Account Name</Label>
-                            <Input type="text" name="name" id="name" onChange={(event) => setName(event.target.value)}/>
+                            <Input type="text" name="name" id="name" value={name} onChange={(event) => setName(event.target.value)}/>
                         </FormGroup>
                 </ModalBody>
                 <ModalFooter>
