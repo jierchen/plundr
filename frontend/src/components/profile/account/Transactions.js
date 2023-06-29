@@ -14,8 +14,8 @@ function Transactions(props) {
         retrieveTransactionPage();
     }, [currentPage]);
 
-    async function retrieveTransactionPage() {
-        await axios.get(`http://localhost:8080/api/account/${props.currentAccountId}/transactions?page=${currentPage}&size=5`, {
+    function retrieveTransactionPage() {
+        axios.get(`http://localhost:8080/api/account/${props.currentAccountId}/transactions?page=${currentPage}&size=5`, {
             headers: {
                 "Accept": "application/json"
             },
@@ -30,43 +30,45 @@ function Transactions(props) {
         });
     }
 
+    const renderAmount = function(transaction) {
+        if(transaction.transactionType === "DEPOSIT") {
+            return (
+                <React.Fragment>
+                    <td>{"$" + transaction.amount}</td>
+                    <td></td>
+                </React.Fragment>
+            );
+        } else if (transaction.transactionType === "WITHDRAW") {
+            return (
+                <React.Fragment>
+                    <td></td>
+                    <td>{"$" + transaction.amount}</td>
+                </React.Fragment>
+            );
+        } else if (transaction.transactionType === "INT_TRANSFER") {
+            return (
+                <React.Fragment>
+                    <td>{transaction.owningAccountId === props.currentAccountId ? transaction.amount : ""}</td>
+                    <td>{transaction.recipientAccountId === props.currentAccountId ? transaction.amount : ""}</td>
+                </React.Fragment>
+            );
+        } else if (transaction.transactionType === "EXT_TRANSFER") {
+            return (
+                <React.Fragment>
+                    <td>{transaction.owningAccountId === props.currentAccountId ? "$" + transaction.amount : ""}</td>
+                    <td>{transaction.recipientAccountId === props.currentAccountId ? "$" + transaction.amount : ""}</td>
+                </React.Fragment>
+            );
+        }
+    }
+
     const transactionsRows = transactions ? transactions.map(transaction => {
         console.log(transaction)
         return (
             <tr key={transaction.id}>
                 <td>{transaction.transactionType}</td>
                 <td>{transaction.description}</td>
-                {() => {
-                    if(transaction.transactionType === "DEPOSIT") {
-                        return (
-                            <React.Fragment>
-                                <td>{"$" + transaction.amount}</td>
-                                <td></td>
-                            </React.Fragment>
-                        );
-                    } else if (transaction.transactionType === "WITHDRAW") {
-                        return (
-                            <React.Fragment>
-                                <td></td>
-                                <td>{"$" + transaction.amount}</td>
-                            </React.Fragment>
-                        );
-                    } else if (transaction.transactionType === "INT_TRANSFER") {
-                        return (
-                            <React.Fragment>
-                                <td>{transaction.owningAccountId == props.currentAccountId ? transaction.amount : ""}</td>
-                                <td>{transaction.recipientAccountId == props.currentAccountId ? transaction.amount : ""}</td>
-                            </React.Fragment>
-                        );
-                    } else if (transaction.transaction_type === "EXT_TRANSFER") {
-                        return (
-                            <React.Fragment>
-                                <td>{transaction.owningAccountId == props.currentAccountId ? transaction.amount : ""}</td>
-                                <td>{transaction.recipientAccountId == props.currentAccountId ? transaction.amount : ""}</td>
-                            </React.Fragment>
-                        );
-                    }
-                }}
+                {renderAmount(transaction)}
                 <td>{transaction.createDate}</td>
             </tr>
         );

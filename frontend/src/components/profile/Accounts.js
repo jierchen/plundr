@@ -10,6 +10,7 @@ const MAX_ACCOUNTS = 5;
 
 function Accounts(props) {
     const [accounts, setAccounts] = useState([]);
+    const [selectedAccount, setSelectedAccount] = useState(null);
     const [isAddAccountModalOpen, setIsAddAccountModalOpen] = useState(false);
     const [isTransactionsModalOpen, setIsTransactionsModalOpen] = useState(false);
     const {credentials} = useContext(CredentialsContext);
@@ -90,19 +91,11 @@ function Accounts(props) {
                     </Button>
                  </td>
                 <td>
-                    <Button color="info" onClick={() => setIsTransactionsModalOpen(true)}>
+                    <Button color="info" onClick={() => {
+                        setIsTransactionsModalOpen(true)
+                        setSelectedAccount(account.id)
+                    }}>
                         Check Transactions
-                        
-                        <Modal size="lg" isOpen={isTransactionsModalOpen} toggle={toggleTransactionModal}>
-                            <ModalBody>
-                                <Transactions currentAccountId={account.id} />
-                            </ModalBody>
-                            <ModalFooter>
-                                <Button color="danger" onClick={() => setIsTransactionsModalOpen(false)}>
-                                    Cancel
-                                </Button>
-                            </ModalFooter>
-                        </Modal>
                     </Button>
                     {' '}
                     <Button color="danger" onClick={() => removeAccount(account.id)}>
@@ -148,6 +141,18 @@ function Accounts(props) {
                     </tbody>
                 </Table>
             </div>
+            <div>
+                <Modal size="lg" isOpen={isTransactionsModalOpen} toggle={toggleTransactionModal}>
+                    <ModalBody>
+                        <Transactions currentAccountId={selectedAccount} />
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button color="danger" onClick={() => setIsTransactionsModalOpen(false)}>
+                            Cancel
+                        </Button>
+                    </ModalFooter>
+                </Modal>
+                </div>
         </React.Fragment>
     );
 }
