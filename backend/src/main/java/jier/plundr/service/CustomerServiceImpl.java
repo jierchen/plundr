@@ -170,8 +170,10 @@ public class CustomerServiceImpl implements CustomerService {
         Customer customer = customerRepository.getById(customerId);
         Customer contact = customerRepository.findByEmail(contactEmail);
 
-        customer.getContacts().add(contact);
-        this.saveCustomer(customer);
+        if (customerId != contact.getId() &&!customer.getContacts().contains(contact) && customer.getContacts().size() < 100) {
+            customer.getContacts().add(contact);
+            this.saveCustomer(customer);
+        }
     }
 
     @Override
