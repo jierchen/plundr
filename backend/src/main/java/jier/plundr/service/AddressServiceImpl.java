@@ -5,7 +5,7 @@ import jier.plundr.dto.address.CreateAddressDTO;
 import jier.plundr.dto.address.UpdateAddressDTO;
 import jier.plundr.mapper.PageMapper;
 import jier.plundr.model.Address;
-import jier.plundr.model.User;
+import jier.plundr.model.PlundrUser;
 import jier.plundr.repository.AddressRepository;
 import jier.plundr.repository.UserRepository;
 import jier.plundr.validation.AddressValidator;
@@ -75,7 +75,7 @@ public class AddressServiceImpl implements AddressService {
      */
     @Override
     public Address createAddress(Long userId, CreateAddressDTO createAddressDto) {
-        User owningUser = userRepository.getById(userId);
+        PlundrUser owningUser = userRepository.getById(userId);
 
         Address newAddress = new Address();
         newAddress.setStreetAddress(createAddressDto.getStreetAddress());
@@ -99,7 +99,7 @@ public class AddressServiceImpl implements AddressService {
      */
     @Override
     public Address updateAddress(Long userId, UpdateAddressDTO updateAddressDto) {
-        User user = userRepository.getById(userId);
+        PlundrUser user = userRepository.getById(userId);
         Address address =  user.getAddress();
 
         if (addressValidator.isUserAddress(userId, address)) {
@@ -124,7 +124,7 @@ public class AddressServiceImpl implements AddressService {
      */
     @Override
     public Boolean deleteAddress(Long userId) {
-        User user = userRepository.getById(userId);
+        PlundrUser user = userRepository.getById(userId);
         Address address =  user.getAddress();
 
         if (addressValidator.isUserAddress(userId, address)) {
@@ -143,7 +143,7 @@ public class AddressServiceImpl implements AddressService {
      * @return {@code Address} of the found {@code User}
      */
     public Address findAddressByUserId(Long userId) {
-        User user = userRepository.getById(userId);
+        PlundrUser user = userRepository.getById(userId);
 
         return user.getAddress();
     }

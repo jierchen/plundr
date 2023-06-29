@@ -1,6 +1,6 @@
 package jier.plundr.security;
 
-import jier.plundr.model.User;
+import jier.plundr.model.PlundrUser;
 import jier.plundr.model.enums.UserType;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
@@ -14,9 +14,9 @@ import java.util.Set;
 @Getter
 public class UserDetailsImpl implements UserDetails {
 
-    private User user;
+    private PlundrUser user;
 
-    public UserDetailsImpl(User user) {
+    public UserDetailsImpl(PlundrUser user) {
         this.user = user;
     }
 
@@ -65,7 +65,7 @@ public class UserDetailsImpl implements UserDetails {
         return true;
     }
 
-    public User getUser() {
+    public PlundrUser getUser() {
         return user;
     }
 

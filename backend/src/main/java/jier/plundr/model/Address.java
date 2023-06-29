@@ -45,5 +45,5 @@ public class Address extends BaseEntity {
     @OneToOne(mappedBy = "address")
     @NotNull
     @JsonBackReference
-    private User owningUser;
+    private PlundrUser owningUser;
 }

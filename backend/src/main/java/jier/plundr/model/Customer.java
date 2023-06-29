@@ -1,6 +1,5 @@
 package jier.plundr.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
@@ -9,9 +8,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.Constraint;
 import javax.validation.constraints.Size;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Table(name = "customer")
@@ -20,7 +19,7 @@ import java.util.List;
 @Setter
 @Getter
 @JsonIgnoreProperties({"accounts", "contacts"})
-public class Customer extends User {
+public class Customer extends PlundrUser {
 
     // Customer bank accounts
     @OneToMany(mappedBy = "owningCustomer", cascade = CascadeType.ALL)
@@ -33,12 +32,12 @@ public class Customer extends User {
     private Account depositAccount;
 
     // Contacts for transfers
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "contacts",
             joinColumns =  @JoinColumn(name = "customer_id"),
             inverseJoinColumns = @JoinColumn(name = "contact_id")
     )
     @Size(max = 100)
-    private List<Customer> contacts = new ArrayList<>();
+    private Set<Customer> contacts = new HashSet<>();
 }

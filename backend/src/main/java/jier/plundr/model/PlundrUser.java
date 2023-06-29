@@ -16,13 +16,13 @@ import javax.validation.constraints.Size;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "users")
+@Table(name = "plundr_user")
 @Inheritance(strategy = InheritanceType.JOINED)
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter
 @Getter
-public abstract class User extends BaseEntity {
+public abstract class PlundrUser extends BaseEntity {
 
     @Id
     @GeneratedValue

@@ -1,6 +1,6 @@
 package jier.plundr.controller;
 
-import jier.plundr.model.User;
+import jier.plundr.model.PlundrUser;
 import jier.plundr.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,9 +19,9 @@ public class UserController {
     private UserRepository userRepository;
 
     @GetMapping("/admin/users")
-    public ResponseEntity<List<User>> getUsers() {
+    public ResponseEntity<List<PlundrUser>> getUsers() {
         try {
-            List<User> users = userRepository.findAll();
+            List<PlundrUser> users = userRepository.findAll();
 
             return new ResponseEntity<>(users, HttpStatus.OK);
         } catch (Exception e) {

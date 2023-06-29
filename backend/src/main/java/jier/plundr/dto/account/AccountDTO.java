@@ -22,5 +22,4 @@ public class AccountDTO {
     private BigDecimal interestRate;
     private BigDecimal withdrawFee;
     private Boolean isDepositAccount;
-
 }

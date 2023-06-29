@@ -16,7 +16,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @Setter
 @Getter
-public class Employee extends User {
+public class Employee extends PlundrUser {
 
     // Employee information
     @Column(name = "salary")

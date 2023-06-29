@@ -4,7 +4,7 @@ import jier.plundr.dto.ReturnPageDTO;
 import jier.plundr.dto.address.CreateAddressDTO;
 import jier.plundr.dto.address.UpdateAddressDTO;
 import jier.plundr.model.Address;
-import jier.plundr.model.User;
+import jier.plundr.model.PlundrUser;
 import jier.plundr.security.UserDetailsImpl;
 import jier.plundr.service.AddressService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -97,7 +96,7 @@ public class AddressController {
     // ------------------------ Customer Requests -------------------------//
 
     @GetMapping("/address")
-    public ResponseEntity<User> getUserAddress(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseEntity<PlundrUser> getUserAddress(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         try {
             Address address = addressService.findAddressByUserId(userDetails.getId());
 

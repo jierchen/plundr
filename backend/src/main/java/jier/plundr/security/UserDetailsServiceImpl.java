@@ -1,6 +1,6 @@
 package jier.plundr.security;
 
-import jier.plundr.model.User;
+import jier.plundr.model.PlundrUser;
 import jier.plundr.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -18,7 +18,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username);
+        PlundrUser user = userRepository.findByUsername(username);
 
         if(user == null) {
             throw new UsernameNotFoundException(String.format("Username %s not found", username));

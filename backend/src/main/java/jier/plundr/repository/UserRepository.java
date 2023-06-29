@@ -1,11 +1,11 @@
 package jier.plundr.repository;
 
-import jier.plundr.model.User;
+import jier.plundr.model.PlundrUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserRepository extends JpaRepository<PlundrUser, Long> {
 
-    User findByUsername(String username);
+    PlundrUser findByUsername(String username);
 }

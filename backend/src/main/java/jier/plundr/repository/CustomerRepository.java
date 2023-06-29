@@ -17,14 +17,14 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
     @Query(value =
             "SELECT * FROM (SELECT contacts.contact_id FROM CONTACTS contacts WHERE contacts.customer_id = ?1) c " +
             "INNER JOIN CUSTOMER customer ON customer.user_id = c.contact_id " +
-            "INNER JOIN USER user ON user.user_id = c.contact_id",
+            "INNER JOIN PLUNDR_USER plundr_user ON plundr_user.user_id = c.contact_id",
             countQuery = "SELECT COUNT(*) FROM CONTACTS c WHERE c.customer_id = ?1",
             nativeQuery = true)
     Page<Customer> findContactsByCustomerId(Long customerId, Pageable pageable);
 
     @Modifying
     @Transactional
-    @Query(value = "DELETE Contacts contacts WHERE contacts.customer_id = ?1 AND contacts.contact_id = ?2",
+    @Query(value = "DELETE FROM CONTACTS contacts WHERE contacts.customer_id = ?1 AND contacts.contact_id = ?2",
             nativeQuery = true)
     void deleteContactByContactId(Long customerId, Long contactId);
 }
